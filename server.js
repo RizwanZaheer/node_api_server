@@ -2,6 +2,7 @@ const path = require("path");
 const PORT = process.env.PORT || 5000;
 const express = require("express");
 const keys = require("./config/keys");
+const cors = require('cors');
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 
@@ -65,8 +66,10 @@ const app = express();
 // body parser Any type of Http req
 // goes through here that why used!!!
 app.use(morgan("combined"));
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
 // cookieSession for 30 day's
 app.use(
   cookieSession({

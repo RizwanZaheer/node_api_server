@@ -23,9 +23,12 @@ userSchema.pre("save", function(next) {
   });
 });
 
-//
-userSchema.methods.comparePassword = function (candidatePssword, callback) {
-  bcrypt.compare(candidatePssword, this.password, function (err, isMatch) {
+// User Schema Methods
+// When new User is created then this
+// func is everywhere can accessible
+// arrow func didn't work here
+userSchema.methods.comparePassword = function(candidatePssword, callback) {
+  bcrypt.compare(candidatePssword, this.password, (err, isMatch) => {
     if (err) return callback(err);
     callback(null, isMatch);
   });

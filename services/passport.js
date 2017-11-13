@@ -21,7 +21,7 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
     if (err) return done(err);
     if (!user) return done(null, false);
     // compare passwords - is `password` equal to user.password?
-    user.comparePassword(password, function(err, isMatch) {
+    user.comparePassword(password, (err, isMatch) => {
       if (err) return done(err);
       // Didn't find user
       if (!isMatch) return done(null, false);
@@ -29,6 +29,19 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
       return done(null, user);
     });
   });
+  // async/ await code
+  // const user = await User.findOne({ email: email });
+  //   if (!user) return done(null, false);
+  //   // compare passwords - is `password` equal to user.password?
+  //   const isMatch = await user.comparePassword(password);
+
+  //   // Didn't find user
+  //   if (!isMatch) {
+  //     return done(null, false);
+  //   } else {
+  //     // send back with user
+  //     return done(null, user);
+  //   }
 });
 
 // const User = mongoose.model("users");
@@ -41,18 +54,20 @@ const jwtOptions = {
 
 // Create JWT Strategy
 // payload is comming back with userid & timestamp from authentication.js
-const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
+const jwtLogin = new JwtStrategy(jwtOptions, async (payload, done) => {
   // See if the user ID in the payload exists in our database
   // If ti does, call 'done' with that other
   // otherwise, call done without a user object
-  User.findById(payload.sub, function(err, user) {
-    if (err) return done(err, false);
-    if (user) {
-      done(null, user);
+  const existingUser = await User.findById(payload.sub);
+  try {
+    if (existingUser) {
+      done(null, existingUser);
     } else {
       done(null, false);
     }
-  });
+  } catch (error) {
+    return done(error, false);
+  }
 });
 
 // Tell passport to use this strategy
