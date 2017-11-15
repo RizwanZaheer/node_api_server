@@ -16,12 +16,12 @@ mongoose.Promise = global.Promise;
 mongoose.connect(keys.mongoURI);
 
 const bodyParser = require("body-parser");
-const cookieSession = require("cookie-session");
+// const cookieSession = require("cookie-session");
 const passport = require("passport");
 const authRoutes = require("./routes/authRoutes");
-require("./models/User");
-require("./models/Survey");
-require("./services/passport");
+// require("./models/User");
+// require("./models/Survey");
+// require("./services/passport");
 
 // These lines use for local Mongodb
 // db.connect(URL, (err) => {
@@ -71,16 +71,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // cookieSession for 30 day's
-app.use(
-  cookieSession({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    keys: [keys.cookieKey]
-  })
-);
+// app.use(
+//   cookieSession({
+//     maxAge: 30 * 24 * 60 * 60 * 1000,
+//     keys: [keys.cookieKey]
+//   })
+// );
 
-app.use(passport.initialize());
-// Session Middleware
-app.use(passport.session());
+// app.use(passport.initialize());
+// // Session Middleware
+// app.use(passport.session());
 
 // Calling Routes
 authRoutes(app);
@@ -92,14 +92,7 @@ authRoutes(app);
 if (process.env.NODE_ENV === "production") {
   // Express will serve up production assets
   // like our main.js or main.css files
-  app.use(express.static("client/build"));
-
-  // Express will server up the index.html file
-  // if it doesn't recognize the route
-  const path = require("path");
-  app.get("*", (req, res) => {
-    app.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-  });
+  console.log('in production!');
 }
 
 const server = app.listen(PORT, err => {
