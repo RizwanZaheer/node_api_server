@@ -7,7 +7,7 @@ const requireSignin = passport.authenticate("local", { session: false });
 
 // Routes
 module.exports = app => {
-  app.get("/", (req, res) => {
+  app.get("/", requireAuth, (req, res) => {
     res.send({ message: "Super secret code is bala bala!" });
   });
   // Signin post Routes
