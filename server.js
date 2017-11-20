@@ -1,5 +1,5 @@
 const path = require("path");
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 const express = require("express");
 const keys = require("./config/keys");
 const cors = require('cors');

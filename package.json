@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js ",
-    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run webhook\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false",
     "webhook": "forever sendgrid_webhook.js",
     "test": "nodemon --exec mocha -R min"
@@ -34,6 +33,7 @@
     "mongodb": "^2.2.31",
     "mongoose": "^4.11.5",
     "morgan": "^1.9.0",
+    "multer": "^1.3.0",
     "nodemon": "^1.11.0",
     "passport": "^0.4.0",
     "passport-google-oauth20": "^1.0.0",
