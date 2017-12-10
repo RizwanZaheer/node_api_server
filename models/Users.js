@@ -6,6 +6,7 @@ const userSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
   id: Number,
+  
 });
 
 // On save Hook, encrypt password
