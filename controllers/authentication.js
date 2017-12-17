@@ -10,10 +10,13 @@ function tokenForUser(user) {
 }
 
 exports.signin = (req, res, next) => {
+  const { user } = req;
+  console.log("user: ", user);
+  // return;
   // User has already had their email and password auth'd
   // we just need to give them a token
   // getting current user with req.user
-  res.send({ token: tokenForUser(req.user) });
+  res.send({ token: tokenForUser(user) });
 };
 
 exports.signup = (req, res, next) => {
@@ -45,4 +48,22 @@ exports.signup = (req, res, next) => {
       res.json({ token: tokenForUser(user) });
     });
   });
+};
+
+// Checking Incomming Email of user is valid present in db or not
+exports.findUserByEmail = (req, res, next) => {
+  console.log("user controller working!!!!");
+  console.log("req : ", req.body);
+  console.log("res : ", res.body);
+  const { email, password } = req.body;
+  User.findOne({ email: email }, (err, existingUser) => {
+    if (err) return next(err);
+    if (!existingUser) {
+      res.status(422).send({ error: { password: "Incorrect Password!"} });
+    }
+    // else {
+    //   return res.status(422).send({error: { email: "Incorrect Email!"}});
+    // }
+  })
+  next();
 };

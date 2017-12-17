@@ -25,6 +25,7 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
       if (err) return done(err);
       // Didn't find user
       if (!isMatch) return done(null, false);
+
       // send back with user
       return done(null, user);
     });

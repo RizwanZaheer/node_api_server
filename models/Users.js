@@ -1,12 +1,34 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const bcrypt = require("bcrypt-nodejs");
+const RecipientSchema = require("./Recipient");
+
+// const MAX_LOGIN_ATTEMPTS = 5;
+// const LOCK_TIME = 2 * 60 * 60 * 1000;
 
 const userSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
   id: Number,
+  recipients: [RecipientSchema],
+  googleId: {
+    type: String,
+    default: ""
+  },
+  credits: {
+    type: Number,
+    default: 0
+  },
+  loginAttempts: { type: Number, required: true, default: 0 },
+  lockUntil: { type: Number },
+  createdDate: Date,
+  modifiedDate: Date
 });
+
+// userSchema.virtual('isLocked').get(function() {
+//   // check for a future lockUntil timestamp
+//   return !!(this.lockUntil && this.lockUntil > Date.now());
+// });
 
 // On save Hook, encrypt password
 userSchema.pre("save", function(next) {

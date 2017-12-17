@@ -1,5 +1,5 @@
 const passport = require("passport");
-const Authentication = require("../controllers/authentication");
+const { findUserByEmail, signin, signup } = require("../controllers/authentication");
 const passportService = require("../services/passport");
 
 const requireAuth = passport.authenticate("jwt", { session: false });
@@ -11,10 +11,10 @@ module.exports = app => {
     res.send({ message: "Super secret code is bala bala!" });
   });
   // Signin post Routes
-  app.post("/signin", requireSignin, Authentication.signin);
+  app.post("/signin", findUserByEmail, requireSignin, signin);
 
   // Singup Post Route
-  app.post("/signup", Authentication.signup);
+  app.post("/signup", signup);
 
   // app.get(
   //   "/auth/google/",
