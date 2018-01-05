@@ -19,6 +19,7 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const authRoutes = require("./routes/authRoutes");
+const uesrRoutes = require("./routes/uesrRoutes");
 require("./models/User");
 require("./models/Survey");
 require("./services/passport");
@@ -67,8 +68,8 @@ const app = express();
 // goes through here that why used!!!
 app.use(morgan("combined"));
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.json({limit: '50mb'}));
 
 // cookieSession for 30 day's
 app.use(
@@ -84,8 +85,9 @@ app.use(passport.session());
 
 // Calling Routes
 authRoutes(app);
+uesrRoutes(app);
 // require("./routes/billingRoutes")(app);
-// require("./routes/surveyRoutes")(app);
+require("./routes/surveyRoutes")(app);
 
 
 const server = app.listen(PORT, err => {

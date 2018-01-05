@@ -1,28 +1,85 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const bcrypt = require("bcrypt-nodejs");
-const RecipientSchema = require("./Recipient");
+const AddressSchema = require("./Address");
 
 // const MAX_LOGIN_ATTEMPTS = 5;
 // const LOCK_TIME = 2 * 60 * 60 * 1000;
 
 const userSchema = new Schema({
+  id: Number,
   email: { type: String, unique: true, lowercase: true },
   password: String,
-  id: Number,
-  recipients: [RecipientSchema],
-  googleId: {
+  gender: {
     type: String,
     default: ""
   },
-  credits: {
-    type: Number,
-    default: 0
+  fname: {
+    type: String,
+    default: ""
   },
-  loginAttempts: { type: Number, required: true, default: 0 },
-  lockUntil: { type: Number },
-  createdDate: Date,
-  modifiedDate: Date
+  lname: {
+    type: String,
+    default: ""
+  },
+  dob: {
+    type: Date
+  },
+  phone: {
+    type: String,
+    default: ""
+  },
+  caste: {
+    type: String,
+    default: '',
+  },
+  image: {
+    type: String,
+    default: ""
+  },
+  status: {
+    type: String,
+    default: ""
+  },
+  religion: {
+    type: String,
+    default: ""
+  },
+  education: {
+    type: String,
+    default: ""
+  },
+  mother_tongue: {
+    type: String,
+    default: ""
+  },
+  height: {
+    type: String,
+    default: ""
+  },
+  weight: {
+    type: String,
+    default: String
+  },
+  // address: [AddressSchema],
+  // googleId: {
+  //   type: String,
+  //   default: ""
+  // },
+  // credits: {
+  //   type: Number,
+  //   default: 0
+  // },
+  // loginAttempts: { type: Number, required: true, default: 0 },
+  // lockUntil: { type: Number },
+  createdDate: {
+    type: Date,
+    default: Date.now()
+  },
+  modifiedDate: {
+    type: Date,
+    default: Date.now()
+  }
 });
 
 // userSchema.virtual('isLocked').get(function() {

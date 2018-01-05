@@ -1,6 +1,11 @@
 const passport = require("passport");
-const { findUserByEmail, signin, signup } = require("../controllers/authentication");
+// const express = require("express");
+const { findUserByEmail, signin, signup, testing } = require("../controllers/authentication");
 const passportService = require("../services/passport");
+
+const multer = require('multer');
+
+const upload = multer({ dest: '../public/uploads/' });
 
 const requireAuth = passport.authenticate("jwt", { session: false });
 const requireSignin = passport.authenticate("local", { session: false });
@@ -11,11 +16,21 @@ module.exports = app => {
     res.send({ message: "Super secret code is bala bala!" });
   });
   // Signin post Routes
-  app.post("/signin", findUserByEmail, requireSignin, signin);
+  app.post("/signin", requireSignin, signin);
 
   // Singup Post Route
   app.post("/signup", signup);
 
+  app.post("/testing", testing);
+  
+  // app.post('/api/upload', 
+    // function (req, res, next) {
+    // console.log("req.body: ", req.body);
+    // console.log("req.files: ", req.files);
+    // // res.end(req.file);
+    // res.send({success: 'success upload'});
+  // }
+  // );
   // app.get(
   //   "/auth/google/",
   //   passport.authenticate("google", {
