@@ -22,8 +22,12 @@ const userSchema = new Schema({
     type: String,
     default: ""
   },
+  city: { type: String, default: "" },
+  country: { type: String, default: "" },
+  province: { type: String, default: "" },
   dob: {
-    type: Date
+    type: Date,
+    default: ""
   },
   phone: {
     type: String,
@@ -31,7 +35,7 @@ const userSchema = new Schema({
   },
   caste: {
     type: String,
-    default: '',
+    default: ""
   },
   image: {
     type: String,
@@ -60,6 +64,10 @@ const userSchema = new Schema({
   weight: {
     type: String,
     default: String
+  },
+  about_my_self: {
+    type: String,
+    default: '',
   },
   // address: [AddressSchema],
   // googleId: {

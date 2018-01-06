@@ -5,7 +5,7 @@ exports.findUserByEmail = (req, res, next) => {
 };
 
 // findUserByIdAndUpdateImageUrl
-exports.findUserByIdAndUpdateImageUrl = (req, res, ext) => {
+exports.findUserByIdAndUpdateImageUrl = (req, res, next) => {
   const { userId, imageUrl } = req.body;
   console.log(userId, imageUrl);
   console.log("imageurl type:", typeof imageUrl);
@@ -17,7 +17,7 @@ exports.findUserByIdAndUpdateImageUrl = (req, res, ext) => {
       if (err) return next(err);
       // If a user with email does exist, returns an error
       if (doc) {
-        return res.send({ new_user_detail: doc });
+        return res.json({ new_user_detail: doc });
       }
 
       // If a user with email does Not Exist, create and save user record
@@ -30,3 +30,9 @@ exports.findUserByIdAndUpdateImageUrl = (req, res, ext) => {
     }
   );
 };
+
+exports.getUserDetail = (req, res, next) => {
+  const { userId } = req.body;
+  console.log('userid: ', userId)
+  res.json({message: "success"});
+}
