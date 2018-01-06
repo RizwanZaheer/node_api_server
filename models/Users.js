@@ -110,7 +110,6 @@ userSchema.pre("save", function(next) {
     });
   });
 });
-
 // User Schema Methods
 // When new User is created then this
 // func is everywhere can accessible
