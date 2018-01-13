@@ -31,8 +31,104 @@ exports.findUserByIdAndUpdateImageUrl = (req, res, next) => {
   );
 };
 
+exports.updateAndSaveUser = (req, res, next) => {
+  const {
+    fname,
+    email,
+    lname,
+    education,
+    religion,
+    about_my_self,
+    blood_group,
+    caste,
+    dob,
+    drink,
+    height,
+    mother_tongue,
+    phone,
+    province,
+    smoke,
+    status,
+    weight,
+    city,
+    country,
+    userId
+  } = req.body;
+  // console.log(" response : ", {
+  //   fname,
+  //   email,
+  //   lname,
+  //   education,
+  //   religion,
+  //   about_my_self,
+  //   blood_group,
+  //   caste,
+  //   dob,
+  //   drink,
+  //   height,
+  //   mother_tongue,
+  //   phone,
+  //   province,
+  //   smoke,
+  //   status,
+  //   weight,
+  //   city,
+  //   country,
+  //   userId
+  // });
+  User.findOneAndUpdate(
+    {
+      _id: userId
+    },
+    { $set: {
+      fname,
+      email,
+      lname,
+      education,
+      religion,
+      about_my_self,
+      blood_group,
+      caste,
+      dob,
+      drink,
+      height,
+      mother_tongue,
+      phone,
+      province,
+      smoke,
+      status,
+      weight,
+      city,
+      country,
+      userId
+    } },
+    { new: true },
+    (err, doc) => {
+      if (err) next(err)
+      if (doc) {
+        return res.json({
+          success: true,
+          user: doc
+        });
+      }
+      next();
+    }
+  );
+};
+
 exports.getUserDetail = (req, res, next) => {
   const { userId } = req.body;
-  console.log('userid: ', userId)
-  res.json({message: "success"});
-}
+  console.log("userid: ", userId);
+  User.findById({ _id: userId }, (err, doc) => {
+    if (err) return next(err);
+    // If a user with id does exist, returns an error
+    if (doc) {
+      return res.json({
+        success: true,
+        user: doc
+      });
+    }
+    next();
+  });
+  // res.json({message: "success"});
+};

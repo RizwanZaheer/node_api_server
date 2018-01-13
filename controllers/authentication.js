@@ -83,8 +83,8 @@ exports.findUserByEmail = (req, res, next) => {
 
 
 exports.testing = (req, res, next) => {
-  const { author_id } = req.body;
-  console.log("req.body.author_id: ", author_id);
+  // const { author_id } = req.body;
+  // console.log("req.body.author_id: ", author_id);
   // const name = "Rizwan Zaheer";
   // const id = "5a40f27dbc0568079bb7d3fc";
   // const story = new Story({
@@ -142,11 +142,13 @@ exports.testing = (req, res, next) => {
   //     // prints "The author is Ian Fleming"
   //   });
 
-  // var author = new Person({
-  //   _id: new mongoose.Types.ObjectId(),
-  //   name: 'Rizwan Zaheer Ahmed',
-  //   age: 50
-  // });
+  const author_id = new mongoose.Types.ObjectId();
+  var author = new Person({
+    _id: new mongoose.Types.ObjectId(),
+    name: 'Rizwan Zaheer Ahmed',
+    age: 50,
+    // stories:
+  });
 
   // author.save(function (err) {
   //   if (err) return handleError(err);

@@ -10,6 +10,7 @@ const userSchema = new Schema({
   id: Number,
   email: { type: String, unique: true, lowercase: true },
   password: String,
+  rejectedBy: [{ type: Schema.Types.ObjectId, default: "" }],
   gender: {
     type: String,
     default: ""
@@ -57,15 +58,47 @@ const userSchema = new Schema({
     type: String,
     default: ""
   },
+  annualIncome: {
+    type: String,
+    default: ""
+  },
+  bodyType: {
+    type: String,
+    default: ""
+  },
   height: {
     type: String,
     default: ""
   },
   weight: {
     type: String,
-    default: String
+    default: ""
+  },
+  familyAffluence: {
+    type: String,
+    default: ""
+  },
+  healthInformation: {
+    type: String,
+    default: ""
+  },
+  skinTone: {
+    type: String,
+    default: ""
   },
   about_my_self: {
+    type: String,
+    default: '',
+  },
+  smoke: {
+    type: String,
+    default: '',
+  },
+  drink: {
+    type: String,
+    default: '',
+  },
+  blood_group: {
     type: String,
     default: '',
   },
