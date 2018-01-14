@@ -19,9 +19,12 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const authRoutes = require("./routes/authRoutes");
-const uesrRoutes = require("./routes/uesrRoutes");
+const userRoutes = require("./routes/userRoutes");
+const partnerPreferencesRoutes = require('./routes/partnerPreferencesRoutes');
+
 require("./models/User");
 require("./models/Survey");
+// require("./models/PartnerPreferences");
 require("./services/passport");
 
 // These lines use for local Mongodb
@@ -85,7 +88,8 @@ app.use(passport.session());
 
 // Calling Routes
 authRoutes(app);
-uesrRoutes(app);
+userRoutes(app);
+partnerPreferencesRoutes(app);
 // require("./routes/billingRoutes")(app);
 require("./routes/surveyRoutes")(app);
 
