@@ -30,11 +30,15 @@ const userSchema = new Schema({
     type: Date,
     default: ""
   },
+  age: {
+    type: Number,
+    default: 0,
+  },
   phone: {
     type: String,
     default: ""
   },
-  caste: {
+  community: {
     type: String,
     default: ""
   },
@@ -54,7 +58,7 @@ const userSchema = new Schema({
     type: String,
     default: ""
   },
-  mother_tongue: {
+  motherTongue: {
     type: String,
     default: ""
   },
@@ -86,7 +90,11 @@ const userSchema = new Schema({
     type: String,
     default: ""
   },
-  about_my_self: {
+  hairType: {
+    type: String,
+    default: ""
+  },
+  aboutMySelf: {
     type: String,
     default: '',
   },
@@ -98,7 +106,7 @@ const userSchema = new Schema({
     type: String,
     default: '',
   },
-  blood_group: {
+  bloodGroup: {
     type: String,
     default: '',
   },

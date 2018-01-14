@@ -83,7 +83,7 @@ exports.findUserByEmail = (req, res, next) => {
 
 
 exports.testing = (req, res, next) => {
-  // const { author_id } = req.body;
+  const { author_id } = req.body;
   // console.log("req.body.author_id: ", author_id);
   // const name = "Rizwan Zaheer";
   // const id = "5a40f27dbc0568079bb7d3fc";
@@ -142,13 +142,13 @@ exports.testing = (req, res, next) => {
   //     // prints "The author is Ian Fleming"
   //   });
 
-  const author_id = new mongoose.Types.ObjectId();
-  var author = new Person({
-    _id: new mongoose.Types.ObjectId(),
-    name: 'Rizwan Zaheer Ahmed',
-    age: 50,
-    // stories:
-  });
+  // const author_id = new mongoose.Types.ObjectId();
+  // var author = new Person({
+  //   _id: new mongoose.Types.ObjectId(),
+  //   name: 'Rizwan Zaheer Ahmed',
+  //   age: 50,
+  //   // stories:
+  // });
 
   // author.save(function (err) {
   //   if (err) return handleError(err);
@@ -167,27 +167,17 @@ exports.testing = (req, res, next) => {
   // var personObj = { name: "Rizwan" };
   // var testid;
   var allRules;
-  Person.find({})
-    // populate('stories'). // only works if we pushed refs to children
-    .select('name age')
-    .exec(function(err, person) {
+
+  User.findById({ _id: author_id })
+    .select('fname lname gender')  
+    .exec((err, user) => {
       if (err) return next(err);
-      console.log(person);
-      console.log(person.name);
-      console.log("person age", person.age);
-      testid = person._id;
-      console.log(testid);
-      // personObj = person;
-      // personObj._id = person._id;
-      // personObj.name = person.name;
-      // personObj.age = person.age;
-      // personObj.testName = "test name";
-      console.log("working!!!");
+      console.log("user is: ", user);
     })
-    .then((person, err) => {
-      // if (err) return next(err);
-      if (person) {
-        Story.find({ author: person._id })
+    .then((finduser, err) => {
+      console.log('then finduser is: ', finduser);
+      if (finduser) {
+        Story.find({ author: finduser._id })
           //.select('title')
           .exec((err, str) => {
             console.log("stories", typeof str);
@@ -196,23 +186,72 @@ exports.testing = (req, res, next) => {
           })
           .then((strresult, err) => {
             console.log("sttst: ", strresult);
-            const user = person._doc;
+            const user = finduser._doc;
             // strresult.push(user);
             // allRules = Object.assign({},strresult);
-            allRules = user;
+            // allRules = user;
             // next();
-            // res.send({
-            //   success: true,
-            //   req: "Request Complete!",
-            //   result: {
-            //     stories: strresult,
-            //     user: user
-            //   }
-            // });
+            res.send({
+              success: true,
+              req: "Request Complete!",
+              result: {
+                stories: strresult,
+                user
+              }
+            });
           });
       }
+
+    }).catch((err) => {
+      console.log("catch error: ", err);
     });
-  console.log("all users: ", allRules);
+
+  // Person.find({})
+  //   // populate('stories'). // only works if we pushed refs to children
+  //   //.select('name age')
+  //   .exec(function(err, person) {
+  //     if (err) return next(err);
+  //     console.log(person);
+  //     console.log(person.name);
+  //     console.log("person age", person.age);
+  //     testid = person._id;
+  //     console.log(testid);
+  //     // personObj = person;
+  //     // personObj._id = person._id;
+  //     // personObj.name = person.name;
+  //     // personObj.age = person.age;
+  //     // personObj.testName = "test name";
+  //     console.log("working!!!");
+  //   })
+  //   .then((person, err) => {
+  //     // if (err) return next(err);
+  //     if (person) {
+  //       Story.find({ author: person._id })
+  //         //.select('title')
+  //         .exec((err, str) => {
+  //           console.log("stories", typeof str);
+  //           if (err) return next(err);
+  //           if (str) console.log("stories: ", str);
+  //         })
+  //         .then((strresult, err) => {
+  //           console.log("sttst: ", strresult);
+  //           const user = person._doc;
+  //           // strresult.push(user);
+  //           // allRules = Object.assign({},strresult);
+  //           allRules = user;
+  //           // next();
+  //           // res.send({
+  //           //   success: true,
+  //           //   req: "Request Complete!",
+  //           //   result: {
+  //           //     stories: strresult,
+  //           //     user: user
+  //           //   }
+  //           // });
+  //         });
+  //     }
+  //   });
+  // console.log("all users: ", allRules);
   // Person.aggregate([
   //   {
   //     $lookup: {
