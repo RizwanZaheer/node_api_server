@@ -1,8 +1,11 @@
 
+const { findAllPartnerPreferences,
+  getPartnerPreference
+  } = require('../controllers/partnerpreferencesController');
+
 
 module.exports = app => {
-  app.post('/api/partnerPreferences', () => {
-    
-    console.log('partnerPreferencesRoutes working!');
-  });
+
+  // return partner preference with specific user
+  app.post('/api/getpartnerpreference', getPartnerPreference );
 }
