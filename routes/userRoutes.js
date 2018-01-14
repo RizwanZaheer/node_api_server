@@ -21,7 +21,6 @@ module.exports = app => {
   // update the existing user 
   //and send back the save new change 
   app.post("/api/updateandsaveuser", updateAndSaveUser);
-  app.post("/api/updateandsavepartnerpreferences", saveAndUpdatePartnerPreferences);
   app.post("/api/getage", (req, res, next) => {
     const { age } = req.body;
     console.log(age);
