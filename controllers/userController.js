@@ -137,8 +137,7 @@ exports.getUserDetail = (req, res, next) => {
     });
 };
 
-
-// get users by  partner preferences 
+// get users by  partner preferences
 exports.getUsers = (req, res, next) => {
   const { gender, userId } = req.body;
   // console.log("userid: ", userId);
@@ -146,10 +145,12 @@ exports.getUsers = (req, res, next) => {
     if (err) return next(err);
     if (doc) {
       // console.log('wroking!!!!!!!!!', doc);
-      console.log('wroking!!!!!!!!!', typeof doc.fromAge);
-      console.log('wroking!!!!!!!!!', typeof doc.toAge);
+      console.log("wroking!!!!!!!!!", typeof doc.fromAge);
+      console.log("wroking!!!!!!!!!", typeof doc.toAge);
       User.find({ gender })
-        .where("age").gt(doc.fromAge - 1).lt(doc.toAge + 1)
+        .where("age")
+        .gt(doc.fromAge - 1)
+        .lt(doc.toAge + 1)
         // .where("likes")
         // .in([doc.bodyType])
         // where('name.last').equals('Ghost').
@@ -161,7 +162,7 @@ exports.getUsers = (req, res, next) => {
         )
         .exec((err, users) => {
           // If a user with id does exist, returns an error
-          console.log(users)
+          console.log(users);
           if (err) return next(err);
           if (users) {
             return res.json({
@@ -177,6 +178,19 @@ exports.getUsers = (req, res, next) => {
   });
 };
 
+exports.getAllUsers = (req, res, next) => {
+  User.find({})
+    .then((users, err) => {
+      if (err) return next(err);
+      if (users) {
+        res.send({
+          success: true,
+          users
+        });
+      }
+    })
+    .catch(err => console.log(err));
+};
 
 exports.getDetails = (req, res, next) => {
   const { userId } = req.body;
@@ -202,5 +216,3 @@ exports.getDetails = (req, res, next) => {
     }
   });
 };
-
-

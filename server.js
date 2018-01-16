@@ -21,6 +21,7 @@ const passport = require("passport");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const partnerPreferencesRoutes = require('./routes/partnerPreferencesRoutes');
+const searchRoutes = require('./routes/searchRoutes');
 
 require("./models/User");
 require("./models/Survey");
@@ -88,6 +89,7 @@ app.use(passport.session());
 
 // Calling Routes
 authRoutes(app);
+searchRoutes(app);
 userRoutes(app);
 partnerPreferencesRoutes(app);
 // require("./routes/billingRoutes")(app);
