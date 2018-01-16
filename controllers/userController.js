@@ -178,41 +178,41 @@ exports.getUsers = (req, res, next) => {
   });
 };
 
-exports.getAllUsers = (req, res, next) => {
-  User.find({})
-    .then((users, err) => {
-      if (err) return next(err);
-      if (users) {
-        res.send({
-          success: true,
-          users
-        });
-      }
-    })
-    .catch(err => console.log(err));
-};
-
 exports.getDetails = (req, res, next) => {
   const { userId } = req.body;
   console.log("userid: ", userId);
   User.findById({ _id: userId }, (err, doc) => {
     // If a user with id does exist, returns an error
     if (err) return next(err);
-    if (doc) {
-      PartnerPreferences.findOne({ _user: doc._id })
-        .then((partnerPreferences, err) => {
-          if (err) return next(err);
-          if (partnerPreferences) {
-            return res.json({
-              success: true,
-              user: doc,
-              partnerPreferences
-            });
-          }
-        })
-        .catch(error => {
-          console.log("catch error: ", error);
+    try {
+      if (doc) {
+        PartnerPreferences.findOne({ _user: doc._id })
+          .then((partnerPreferences, err) => {
+            if (err) return next(err);
+            if (partnerPreferences) {
+              return res.json({
+                success: true,
+                user: doc,
+                partnerPreferences
+              });
+            }
+          })
+          .catch(error => {
+            console.log("catch error: ", error);
+          });
+      }
+      else {
+        return res.json({
+          success: true,
+          user: doc,
+          partnerPreferences: {}// due to this when partner preferences detail not present
+          // and want to render the user profile in My profile component
         });
+      }
+    } catch (error) {
+      console.log('in catch: ', error);
     }
+    
+    
   });
 };

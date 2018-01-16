@@ -1,7 +1,6 @@
 const passport = require("passport");
 // const express = require("express");
 const {
-  findUserByEmail,
   signin,
   signup,
   testing

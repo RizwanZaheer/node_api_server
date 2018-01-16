@@ -17,7 +17,6 @@ module.exports = app => {
   // throught partner preferences
   app.post("/api/getusers", getUsers);
 
-  app.post('/api/getallusers', getAllUsers);
   // get user/partner preferences using userId
   app.post("/api/getdetails", getDetails);
   // update the existing user 
