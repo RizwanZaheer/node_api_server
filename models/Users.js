@@ -28,7 +28,7 @@ const userSchema = new Schema({
   province: { type: String, default: "" },
   dob: {
     type: Date,
-    default: ""
+    default: Date.now(),
   },
   age: {
     type: Number,

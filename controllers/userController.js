@@ -61,7 +61,9 @@ exports.updateAndSaveUser = (req, res, next) => {
     country,
     userId
   } = req.body;
-
+  const newDob = new Date(dob);
+  console.log("dob is: ", newDob );
+  console.log("dob is: ", typeof newDob);
   User.findOneAndUpdate(
     {
       _id: userId
