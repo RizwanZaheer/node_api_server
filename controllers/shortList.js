@@ -3,14 +3,27 @@ const ShortList = require("../models/ShortList");
 
 exports.getShortList = (req, res, next) => {
   const { id } = req.body;
-  User.findOne({ _id: id })
+  ShortList.findOne({ _user: id })
     .then(user => {
       // if (err) return next(err);
       if (user) {
-        res.send({
-          success: true,
-          user,
+        const usersProfileList = [];
+        user.shortListUsers.forEach(id => {
+          console.log("id is: ", id);
+          User.findOne({ _id: id })
+            .select("fname lname age image city country provice height weight religion")
+            .then(usr => {
+              usersProfileList.push(usr);
+            })
+            .catch(err => console.log(err));
         });
+        setTimeout(() => {
+          return res.json({
+            success: true,
+            user: usersProfileList,
+          });
+          next();
+        }, 800);
       }
     })
     .catch(errors => console.log(errors));
@@ -21,43 +34,53 @@ exports.addUserInShortList = (req, res, next) => {
   ShortList.findOne({ _user: userId })
     .then(users => {
       if (users) {
-        users.shortListUsers.push(profileId);
-        console.log("users.shortListUsers: ", users.shortListUsers);
-        ShortList.findOneAndUpdate(
-          { _user: userId },
-          {
-            $set: {
-              shortListUsers: users.shortListUsers,
+        const isPresent = users.shortListUsers.indexOf(profileId);
+        console.log("isPresent: ", isPresent);
+        if (isPresent === -1) {
+          users.shortListUsers.push(profileId);
+          console.log("users.shortListUsers: ", users.shortListUsers);
+          console.log("isPresent: ", isPresent);
+          ShortList.findOneAndUpdate(
+            { _user: userId },
+            {
+              $set: {
+                shortListUsers: users.shortListUsers,
+              },
             },
-          },
-          { new: true }
-        ).set
-          .then(doc => {
-            if (doc) {
-              return res.json({
-                success: true,
-                shortListUsers: doc,
-              });
-            }
-            next();
-          })
-          .catch(err => console.log(err));
+            { new: true }
+          )
+            .then(doc => {
+              if (doc) {
+                return res.json({
+                  success: true,
+                  message: "Member Successfuly Added in your Short List!",
+                  shortListUsers: doc,
+                });
+              }
+              next();
+            })
+            .catch(err => console.log(err));
+        } else
+          return res.json({
+            success: true,
+            message: "Member is Already in your Short List!",
+            shortListUsers: users,
+          });
       } else {
         // if userid with not found then create new record and insert in shortlist table
         try {
-          new ShortList({
+          const shortlist = new ShortList({
             shortListUsers: profileId,
             _user: userId,
-          })
-            .save(err => {
-              if (err) return next(err);
-              // Respond to request indication the user was created
-              res.send({ success: true, shortlist });
-            })
-            .then(save => {
-              console.log("save: ", save);
-            })
-            .catch(err => console.log("save shortlist catch: ", err));
+          });
+          shortlist.save(err => {
+            if (err) return next(err);
+            res.json({
+              success: true,
+              message: "Member Successfuly Added in your Short List!",
+              shortlist,
+            });
+          });
         } catch (error) {
           console.log("else catch error: ", error);
         }

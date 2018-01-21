@@ -6,7 +6,8 @@ const {
   saveAndUpdatePartnerPreferences,
   getDetails,
   getUsers,
-  getAllUsers
+  getAllUsers,
+  getUserEmail
 } = require("../controllers/userController");
 
 module.exports = app => {
@@ -19,6 +20,9 @@ module.exports = app => {
 
   // get user/partner preferences using userId
   app.post("/api/getdetails", getDetails);
+
+  app.post('/api/getuseremail', getUserEmail);
+
   // update the existing user 
   //and send back the save new change 
   app.post("/api/updateandsaveuser", updateAndSaveUser);

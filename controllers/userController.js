@@ -59,12 +59,12 @@ exports.updateAndSaveUser = (req, res, next) => {
     weight,
     city,
     country,
-    userId
+    userId,
   } = req.body;
   const newDob = new Date(dob);
   User.findOneAndUpdate(
     {
-      _id: userId
+      _id: userId,
     },
     {
       $set: {
@@ -93,8 +93,8 @@ exports.updateAndSaveUser = (req, res, next) => {
         weight,
         city,
         country,
-        userId
-      }
+        userId,
+      },
     },
     { new: true },
     (err, doc) => {
@@ -102,7 +102,7 @@ exports.updateAndSaveUser = (req, res, next) => {
       if (doc) {
         return res.json({
           success: true,
-          user: doc
+          user: doc,
         });
       }
       next();
@@ -127,7 +127,7 @@ exports.getUserDetail = (req, res, next) => {
       if (doc) {
         return res.json({
           success: true,
-          user: doc
+          user: doc,
           // partnerPreferences
         });
       }
@@ -144,22 +144,19 @@ exports.getUsers = (req, res, next) => {
   PartnerPreferences.findOne({ _user: userId }).exec((err, doc) => {
     if (err) return next(err);
     if (doc) {
-      // console.log('wroking!!!!!!!!!', doc);
-      console.log("wroking!!!!!!!!!", typeof doc.fromAge);
-      console.log("wroking!!!!!!!!!", typeof doc.toAge);
       User.find({ gender })
         .where("age")
-        .gt(doc.fromAge - 1)
-        .lt(doc.toAge + 1)
+        .gte(doc.fromAge)
+        .lte(doc.toAge)
+        .sort("-age fname lname")
+        .select(
+          "fname lname motherTongue religion age height city country province aboutMySelf image"
+        )
         // .where("likes")
         // .in([doc.bodyType])
         // where('name.last').equals('Ghost').
         // where('likes').in(['vaporizing', 'talking']).
         .limit(10)
-        .sort("age")
-        .select(
-          "fname lname motherTongue religion age height city country province aboutMySelf image"
-        )
         .exec((err, users) => {
           // If a user with id does exist, returns an error
           console.log(users);
@@ -167,7 +164,7 @@ exports.getUsers = (req, res, next) => {
           if (users) {
             return res.json({
               success: true,
-              users
+              users,
             });
           }
         })
@@ -193,24 +190,36 @@ exports.getDetails = (req, res, next) => {
               return res.json({
                 success: true,
                 user: doc,
-                partnerPreferences
+                partnerPreferences,
               });
             }
           })
           .catch(error => {
             console.log("catch error: ", error);
           });
-      }
-      else {
+      } else {
         return res.json({
           success: true,
           user: doc,
-          partnerPreferences: {}// due to this when partner preferences detail not present
+          partnerPreferences: {}, // due to this when partner preferences detail not present
           // and want to render the user profile in My profile component
         });
       }
     } catch (error) {
-      console.log('in catch: ', error);
+      console.log("in catch: ", error);
     }
   });
+};
+
+exports.getUserEmail = (req, res, next) => {
+  const { _id } = req.body;
+  User.findById({ _id })
+    .select("email")
+    .then(email => {
+      return res.send({
+        success: true,
+        email,
+      });
+    })
+    .catch(err => console.log(err));
 };
