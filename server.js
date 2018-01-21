@@ -22,6 +22,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const partnerPreferencesRoutes = require('./routes/partnerPreferencesRoutes');
 const searchRoutes = require('./routes/searchRoutes');
+const shortListRoutes = require('./routes/shortListRoutes');
 
 require("./models/User");
 require("./models/Survey");
@@ -92,6 +93,7 @@ authRoutes(app);
 searchRoutes(app);
 userRoutes(app);
 partnerPreferencesRoutes(app);
+shortListRoutes(app);
 // require("./routes/billingRoutes")(app);
 require("./routes/surveyRoutes")(app);
 

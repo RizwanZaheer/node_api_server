@@ -62,8 +62,6 @@ exports.updateAndSaveUser = (req, res, next) => {
     userId
   } = req.body;
   const newDob = new Date(dob);
-  console.log("dob is: ", newDob );
-  console.log("dob is: ", typeof newDob);
   User.findOneAndUpdate(
     {
       _id: userId
@@ -214,7 +212,5 @@ exports.getDetails = (req, res, next) => {
     } catch (error) {
       console.log('in catch: ', error);
     }
-    
-    
   });
 };

@@ -15,3 +15,16 @@ exports.getAllUsers = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
+
+exports.getUserById = (req, res, next) => {
+  const { id } = req.body;
+  User.findOne({ _id: id}).then((user) => {
+    // if (err) return next(err);
+    if (user) {
+      res.send({
+        success: true,
+        user
+      });
+    }
+  }).catch((errors) => console.log(errors));
+}
