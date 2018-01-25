@@ -9,7 +9,7 @@ exports.getAllUsers = (req, res, next) => {
       if (users) {
         res.send({
           success: true,
-          users
+          users,
         });
       }
     })
@@ -18,13 +18,61 @@ exports.getAllUsers = (req, res, next) => {
 
 exports.getUserById = (req, res, next) => {
   const { id } = req.body;
-  User.findOne({ _id: id}).then((user) => {
-    // if (err) return next(err);
-    if (user) {
-      res.send({
-        success: true,
-        user
-      });
-    }
-  }).catch((errors) => console.log(errors));
-}
+  User.findOne({ _id: id })
+    .then(user => {
+      // if (err) return next(err);
+      if (user) {
+        res.send({
+          success: true,
+          user,
+        });
+      }
+    })
+    .catch(errors => console.log(errors));
+};
+
+exports.getUsersBySearchCriteria = (req, res, next) => {
+  const {
+    gender,
+    fromage,
+    toage,
+    religion,
+    mothertongue,
+    matrialStatus,
+    community,
+    skintone,
+    bodytype,
+    hairtype,
+    familyaffluence,
+    drink,
+    smoke,
+    height,
+    bloodgroup,
+  } = req.body;
+  console.log("gender: ", gender);
+  console.log("gender: ", fromage);
+  console.log("gender: ", toage);
+  console.log("gender: ", religion);
+  console.log("gender: ", mothertongue);
+  console.log("gender: ", matrialStatus);
+  console.log("gender: ", community);
+  console.log("gender: ", skintone);
+  console.log("gender: ", bodytype);
+  console.log("gender: ", hairtype);
+  console.log("gender: ", familyaffluence);
+  console.log("gender: ", drink);
+  console.log("gender: ", bloodgroup);
+  console.log("gender: ", smoke);
+  console.log("gender: ", height);
+
+  User.find({}).where('gender').equals(gender).
+  where('age').gte(fromage).lte(toage).
+    then(users => {
+    res.send({
+      success: true,
+      users,
+      message: "getusersbysearchcriteria",
+    });
+    
+  }).catch(err =>console.log(err));
+};

@@ -7,8 +7,10 @@ const {
   getDetails,
   getUsers,
   getAllUsers,
-  getUserEmail
+  getUserEmail,
+  // sendMail,
 } = require("../controllers/userController");
+const { sendEmail } = require("../controllers/email");
 
 module.exports = app => {
   app.post("/api/upload", findUserByIdAndUpdateImageUrl);
@@ -21,10 +23,10 @@ module.exports = app => {
   // get user/partner preferences using userId
   app.post("/api/getdetails", getDetails);
 
-  app.post('/api/getuseremail', getUserEmail);
+  app.post("/api/getuseremail", getUserEmail);
 
-  // update the existing user 
-  //and send back the save new change 
+  // update the existing user
+  //and send back the save new change
   app.post("/api/updateandsaveuser", updateAndSaveUser);
   app.post("/api/getage", (req, res, next) => {
     const { age } = req.body;
@@ -32,4 +34,6 @@ module.exports = app => {
     const finalage = getAge(age);
     res.send({ success: true, age: finalage });
   });
+
+  app.post("/api/user/email", sendEmail);
 };
