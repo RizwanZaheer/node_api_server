@@ -177,7 +177,6 @@ exports.getUsers = (req, res, next) => {
 
 exports.getDetails = (req, res, next) => {
   const { userId } = req.body;
-  console.log("userid: ", userId);
   User.findById({ _id: userId }, (err, doc) => {
     // If a user with id does exist, returns an error
     if (err) return next(err);
@@ -191,6 +190,13 @@ exports.getDetails = (req, res, next) => {
                 success: true,
                 user: doc,
                 partnerPreferences,
+              });
+            } else {
+              return res.json({
+                success: true,
+                user: doc,
+                partnerPreferences: {}, // due to this when partner preferences detail not present
+                // and want to render the user profile in My profile component
               });
             }
           })
