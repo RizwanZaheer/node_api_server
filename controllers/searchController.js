@@ -31,6 +31,24 @@ exports.getUserById = (req, res, next) => {
     .catch(errors => console.log(errors));
 };
 
+exports.getUserByName = (req, res, next) => {
+  const {
+   fname
+  } = req.body;
+  console.log("fname: ", fname);
+
+  User.find({ fname })
+    // .where('gender').equals(gender).
+  // where('age').gte(fromage).lte(toage).
+    .then(users => {
+    res.send({
+      success: true,
+      users,
+      message: "getUserByName",
+    });
+    
+  }).catch(err =>console.log(err));
+};
 exports.getUsersBySearchCriteria = (req, res, next) => {
   const {
     gender,
