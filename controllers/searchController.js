@@ -83,8 +83,12 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("gender: ", smoke);
   console.log("gender: ", height);
 
-  User.find({}).where('gender').equals(gender).
-  where('age').gte(fromage).lte(toage).
+  const bodytypeArray = bodytype ? bodytype : ['Slim', 'Average'];
+
+  User.find({})
+    .where('gender').equals(gender)
+    .where('age').gte(fromage).lte(toage)
+    .where('bodyType').in(bodytypeArray).
     then(users => {
     res.send({
       success: true,
