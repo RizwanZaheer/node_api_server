@@ -9,6 +9,7 @@ const {
   getAllUsers,
   getUserEmail,
   // sendMail,
+  addUserInRejectedList
 } = require("../controllers/userController");
 const { sendEmail } = require("../controllers/email");
 
@@ -28,6 +29,9 @@ module.exports = app => {
   // update the existing user
   //and send back the save new change
   app.post("/api/updateandsaveuser", updateAndSaveUser);
+
+  app.patch("/api/adduserinrejectedlist", addUserInRejectedList);
+
   app.post("/api/getage", (req, res, next) => {
     const { age } = req.body;
     console.log(age);

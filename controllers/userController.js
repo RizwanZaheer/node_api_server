@@ -229,3 +229,47 @@ exports.getUserEmail = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
+
+exports.addUserInRejectedList = (req, res, next) => {
+  const { profileId, _id } = req.body;
+  console.log("userId  is: ", _id);
+  console.log("profileId  is: ", profileId);
+  User.findOne({ _id }).then(user => {
+    if (user) {
+      const isPresent = user.rejectedBy.indexOf(profileId);
+      if (isPresent === -1) {
+        user.rejectedBy.push(profileId);
+        User.findOneAndUpdate(
+          {
+            _id,
+          },
+          {
+            $set: {
+              rejectedBy: user.rejectedBy,
+            },
+          },
+          {
+            new: true,
+          }
+        )
+          .then(doc => {
+            if (doc) {
+              return res.json({
+                success: true,
+                message: "Member Successfuly Added in your Rejected List!",
+                rejectedByList: doc,
+              });
+            }
+            next();
+          })
+          .catch(err => console.log(err));
+      } else
+        return res.json({
+          success: true,
+          message: "Member is Already in your Rejected List!",
+          rejectedByList: user,
+        });
+    }
+    console.log("data is: ", user);
+  });
+};

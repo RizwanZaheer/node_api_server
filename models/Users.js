@@ -8,24 +8,44 @@ const AddressSchema = require("./Address");
 
 const userSchema = new Schema({
   id: Number,
-  email: { type: String, unique: true, lowercase: true },
+  email: {
+    type: String,
+    trim: true,
+    unique: true,
+    lowercase: true,
+  },
   password: String,
   rejectedBy: [{ type: Schema.Types.ObjectId, default: "" }],
   gender: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   fname: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   lname: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
-  city: { type: String, default: "" },
-  country: { type: String, default: "" },
-  province: { type: String, default: "" },
+  city: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  country: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  province: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   dob: {
     type: Date,
     default: Date.now(),
@@ -36,83 +56,103 @@ const userSchema = new Schema({
   },
   phone: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   community: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   image: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   status: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   religion: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   education: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   motherTongue: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   annualIncome: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   bodyType: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   height: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   weight: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   familyAffluence: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   healthInformation: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   skinTone: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   hairType: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   aboutMySelf: {
     type: String,
-    default: '',
+    trim: true,
+    default: "",
   },
   smoke: {
     type: String,
-    default: '',
+    trim: true,
+    default: "",
   },
   drink: {
     type: String,
-    default: '',
+    trim: true,
+    default: "",
   },
   bloodGroup: {
     type: String,
-    default: '',
+    trim: true,
+    default: "",
   },
   // address: [AddressSchema],
   // googleId: {
   //   type: String,
+  //   trim: true,
   //   default: ""
   // },
   // credits: {
@@ -123,12 +163,12 @@ const userSchema = new Schema({
   // lockUntil: { type: Number },
   createdDate: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   modifiedDate: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
 // userSchema.virtual('isLocked').get(function() {
