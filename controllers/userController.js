@@ -62,6 +62,14 @@ exports.updateAndSaveUser = (req, res, next) => {
     userId,
   } = req.body;
   const newDob = new Date(dob);
+  console.log('typeof height is: ', typeof height);
+  console.log('typeof weight is: ', typeof weight);
+  console.log('typeof phone is: ', typeof phone);
+  console.log('height is: ', height);
+  // console.log('height parsefloat is: ', parseFloat(height));
+  // console.log('typeof height parsefloat is: ', typeof parseFloat(height));
+  // return;
+  
   User.findOneAndUpdate(
     {
       _id: userId,

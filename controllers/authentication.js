@@ -50,8 +50,8 @@ exports.signup = (req, res, next) => {
       address: {
         $ref: "address_home",
         $id: objId,
-        $db: "tutorialspoint"
-      }
+        $db: "tutorialspoint",
+      },
     });
     // saving User in Db
     user.save(err => {
@@ -81,9 +81,9 @@ exports.findUserByEmail = (req, res, next) => {
   next();
 };
 
-
 exports.testing = (req, res, next) => {
-  const { author_id } = req.body;
+  const { id } = req.body;
+
   // console.log("req.body.author_id: ", author_id);
   // const name = "Rizwan Zaheer";
   // const id = "5a40f27dbc0568079bb7d3fc";
@@ -166,45 +166,46 @@ exports.testing = (req, res, next) => {
   // });
   // var personObj = { name: "Rizwan" };
   // var testid;
-  var allRules;
 
-  User.findById({ _id: author_id })
-    .select('fname lname gender')  
-    .exec((err, user) => {
-      if (err) return next(err);
-      console.log("user is: ", user);
-    })
-    .then((finduser, err) => {
-      console.log('then finduser is: ', finduser);
-      if (finduser) {
-        Story.find({ author: finduser._id })
-          //.select('title')
-          .exec((err, str) => {
-            console.log("stories", typeof str);
-            if (err) return next(err);
-            if (str) console.log("stories: ", str);
-          })
-          .then((strresult, err) => {
-            console.log("sttst: ", strresult);
-            const user = finduser._doc;
-            // strresult.push(user);
-            // allRules = Object.assign({},strresult);
-            // allRules = user;
-            // next();
-            res.send({
-              success: true,
-              req: "Request Complete!",
-              result: {
-                stories: strresult,
-                user
-              }
-            });
-          });
-      }
+  // var allRules;
 
-    }).catch((err) => {
-      console.log("catch error: ", err);
-    });
+  // User.findById({ _id: author_id })
+  //   .select('fname lname gender')
+  //   .exec((err, user) => {
+  //     if (err) return next(err);
+  //     console.log("user is: ", user);
+  //   })
+  //   .then((finduser, err) => {
+  //     console.log('then finduser is: ', finduser);
+  //     if (finduser) {
+  //       Story.find({ author: finduser._id })
+  //         //.select('title')
+  //         .exec((err, str) => {
+  //           console.log("stories", typeof str);
+  //           if (err) return next(err);
+  //           if (str) console.log("stories: ", str);
+  //         })
+  //         .then((strresult, err) => {
+  //           console.log("sttst: ", strresult);
+  //           const user = finduser._doc;
+  //           // strresult.push(user);
+  //           // allRules = Object.assign({},strresult);
+  //           // allRules = user;
+  //           // next();
+  //           res.send({
+  //             success: true,
+  //             req: "Request Complete!",
+  //             result: {
+  //               stories: strresult,
+  //               user
+  //             }
+  //           });
+  //         });
+  //     }
+
+  //   }).catch((err) => {
+  //     console.log("catch error: ", err);
+  //   });
 
   // Person.find({})
   //   // populate('stories'). // only works if we pushed refs to children
@@ -271,9 +272,24 @@ exports.testing = (req, res, next) => {
   //     if (person) console.log(person);
   //   // });
   // });
-  // res.send({
-  //   success: true,
-  //   req: "Request Complete!",
-  //   // result: personObj
-  // });
+
+  const testValue = parseInt(id);
+  console.log("typeof is: ", typeof testValue);
+  console.log("typeof id is: ", typeof id);
+  console.log("id is ", id);
+  console.log("test is ", testValue);
+  const user = new User({
+    height: testValue,
+  });
+  user
+    .save()
+    .then(doc => {
+      console.log("doc of test is: ", doc);
+        return res.send({
+          success: true,
+          req: "Request Complete!",
+          result: doc, 
+        });
+    })
+    .catch(err => console.log("error is: ", err));
 };

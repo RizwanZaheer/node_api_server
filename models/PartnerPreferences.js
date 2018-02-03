@@ -4,19 +4,23 @@ const { Schema } = mongoose;
 const partnerPreferencesSchema = new Schema({
   community: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   status: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   religion: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   education: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   fromAge: {
     type: Number,
@@ -28,65 +32,78 @@ const partnerPreferencesSchema = new Schema({
   },
   motherTongue: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   annualIncome: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   bodyType: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   height: {
-    type: String,
-    default: ""
+    type: Number,
+    default: 0,
   },
   weight: {
-    type: String,
-    default: ""
+    type: Number,
+    default: 0,
   },
   familyAffluence: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   healthInformation: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   skinTone: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   hairType: {
     type: String,
-    default: ""
+    trim: true,
+    default: "",
   },
   smoke: {
     type: String,
-    default: '',
+    trim: true,
+    default: "",
   },
   drink: {
     type: String,
-    default: '',
+    trim: true,
+    default: "",
   },
   bloodGroup: {
     type: String,
-    default: '',
+    trim: true,
+    default: "",
   },
   // _user is use to create a relationship btw partnerPreferences list and user
   // means which user made which partnerPreferences
   _user: { type: Schema.Types.ObjectId, ref: "User" },
   created: {
     type: Date,
-    default: Date.now()
+    default: Date.now(),
   },
   modifiedDate: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
-const ModelClass = mongoose.model("partnerpreferences", partnerPreferencesSchema);
+const ModelClass = mongoose.model(
+  "partnerpreferences",
+  partnerPreferencesSchema
+);
 // Export Model Class
 module.exports = ModelClass;

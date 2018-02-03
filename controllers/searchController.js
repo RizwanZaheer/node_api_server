@@ -32,22 +32,20 @@ exports.getUserById = (req, res, next) => {
 };
 
 exports.getUserByName = (req, res, next) => {
-  const {
-   fname
-  } = req.body;
+  const { fname } = req.body;
   console.log("fname: ", fname);
 
   User.find({ fname })
     // .where('gender').equals(gender).
-  // where('age').gte(fromage).lte(toage).
+    // where('age').gte(fromage).lte(toage).
     .then(users => {
-    res.send({
-      success: true,
-      users,
-      message: "getUserByName",
-    });
-    
-  }).catch(err =>console.log(err));
+      res.send({
+        success: true,
+        users,
+        message: "getUserByName",
+      });
+    })
+    .catch(err => console.log(err));
 };
 exports.getUsersBySearchCriteria = (req, res, next) => {
   const {
@@ -72,29 +70,50 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("gender: ", toage);
   console.log("gender: ", religion);
   console.log("gender: ", mothertongue);
-  console.log("gender: ", matrialStatus);
+  console.log("matrialStatus: ", matrialStatus);
   console.log("gender: ", community);
   console.log("gender: ", skintone);
   console.log("gender: ", bodytype);
   console.log("gender: ", hairtype);
   console.log("gender: ", familyaffluence);
   console.log("gender: ", drink);
-  console.log("gender: ", bloodgroup);
+  // console.log("bloodgroup: ", bloodgroup);
   console.log("gender: ", smoke);
   console.log("gender: ", height);
 
-  const bodytypeArray = bodytype ? bodytype : ['Slim', 'Average'];
-
+  const bodytypeArray = bodytype ? [`${bodytype}`] : ["Slim", "Average"];
+  // const bloodgroupArray = bloodgroup ? [`${bloodgroup}`] : ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+  const status = matrialStatus ? [`${matrialStatus}`] : "Single";
+  const skintoneArray = skintone ? [`${skintone}`] : ["Fair", "Wheatish"];
+  const hairtypeArray = hairtype
+    ? [`${hairtype}`]
+    : ["Black Straight long", "Black Straight medium", "Black Straight short"];
+  console.log("status is: ", status);
+  console.log("body type: ", bodytypeArray);
+  // console.log("bloodgroupArray: ", bloodgroupArray);
   User.find({})
-    .where('gender').equals(gender)
-    .where('age').gte(fromage).lte(toage)
-    .where('bodyType').in(bodytypeArray).
-    then(users => {
-    res.send({
-      success: true,
-      users,
-      message: "getusersbysearchcriteria",
-    });
-    
-  }).catch(err =>console.log(err));
+    .where("gender")
+    .equals(gender)
+    // .ne(gender) // not equls
+    .where("status")
+    .in(status)
+    .where("skinTone")
+    .in(skintoneArray)
+    .where("hairType")
+    .in(hairtypeArray)
+    .where("bodyType")
+    .in(bodytypeArray) // in array 
+    //.nin(bodytypeArray) not in array 
+    // .where("bloodGroup").in(bloodgroupArray)
+    .where("age")
+    .gte(fromage)
+    .lte(toage)
+    .then(users => {
+      res.send({
+        success: true,
+        users,
+        message: "getusersbysearchcriteria",
+      });
+    })
+    .catch(err => console.log(err));
 };

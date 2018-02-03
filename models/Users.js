@@ -100,14 +100,14 @@ const userSchema = new Schema({
     default: "",
   },
   height: {
-    type: String,
+    type: Number,
     trim: true,
-    default: "",
+    default: 0,
   },
   weight: {
-    type: String,
+    type: Number,
     trim: true,
-    default: "",
+    default: 0,
   },
   familyAffluence: {
     type: String,
