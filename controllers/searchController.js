@@ -81,16 +81,43 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("gender: ", smoke);
   console.log("gender: ", height);
 
-  const status = matrialStatus ? [`${matrialStatus}`] : ["Single"];
-  
-  const bodytypeArray = bodytype ? [`${bodytype}`] : ["Slim", "Average"];
-  const skintoneArray = skintone ? [`${skintone}`] : ["Fair", "Wheatish"];
-  
+  const status = matrialStatus
+    ? [`${matrialStatus}`]
+    : ["Single", "Divorced", "Married"];
+  const bodytypeArray = bodytype
+    ? [`${bodytype}`]
+    : ["Slim", "Average", "Athletic", "Heavy"];
+  const skintoneArray = skintone
+    ? [`${skintone}`]
+    : ["Very Fair", "Fair", "Wheatish", "Dark"];
+  const familyAffluenceArray = familyaffluence
+    ? [`${familyaffluence}`]
+    : [
+        "Affluent",
+        "Upper Middle class",
+        "Middle class",
+        "Lower Middle class",
+        "Lower class",
+      ];
+  const communityArray = community
+    ? [`${community}`]
+    : [
+        "Chauhdary",
+        "Malik",
+        "Raja",
+        "Qurashi",
+        "Shakeh",
+        "Butt",
+        "Mir",
+        "Kayani",
+        "Khan",
+    ];
+  const religionArray = religion ? [`${religion}`] : ["Muslim", "Hindu", "Christian", "No Religion"];
+
   const hairtypeArray = hairtype
     ? [`${hairtype}`]
     : ["Black Straight long", "Black Straight medium", "Black Straight short"];
-  
-  
+
   console.log("status is: ", status);
   console.log("body type: ", bodytypeArray);
   User.find({})
@@ -99,16 +126,19 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     // .ne(gender) // not equls
     .where("status")
     .in(status)
-    // .where("skinTone")
-    // .in(skintoneArray)
-    // .where("hairType")
-    // .in(hairtypeArray)
+    .where("skinTone")
+    .in(skintoneArray)
     .where("bodyType")
-    .in(bodytypeArray) // in array 
-    // .nin(bodytypeArray) // not in array 
+    .in(bodytypeArray) // in array
+    // .nin(bodytypeArray) // not in array
+    .where("hairType")
+    .in(hairtypeArray)
     .where("age")
     .gte(fromage)
     .lte(toage)
+    // limit(10).
+    // sort('-occupation').
+    // select('name occupation').
     .exec()
     .then(users => {
       res.send({
