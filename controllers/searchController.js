@@ -82,15 +82,16 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("gender: ", height);
 
   const bodytypeArray = bodytype ? [`${bodytype}`] : ["Slim", "Average"];
-  // const bloodgroupArray = bloodgroup ? [`${bloodgroup}`] : ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
   const status = matrialStatus ? [`${matrialStatus}`] : "Single";
   const skintoneArray = skintone ? [`${skintone}`] : ["Fair", "Wheatish"];
+  
   const hairtypeArray = hairtype
     ? [`${hairtype}`]
     : ["Black Straight long", "Black Straight medium", "Black Straight short"];
+  
+  
   console.log("status is: ", status);
   console.log("body type: ", bodytypeArray);
-  // console.log("bloodgroupArray: ", bloodgroupArray);
   User.find({})
     .where("gender")
     .equals(gender)
@@ -104,7 +105,6 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     .where("bodyType")
     .in(bodytypeArray) // in array 
     //.nin(bodytypeArray) not in array 
-    // .where("bloodGroup").in(bloodgroupArray)
     .where("age")
     .gte(fromage)
     .lte(toage)
