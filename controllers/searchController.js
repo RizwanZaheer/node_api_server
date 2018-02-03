@@ -81,8 +81,9 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("gender: ", smoke);
   console.log("gender: ", height);
 
+  const status = matrialStatus ? [`${matrialStatus}`] : ["Single"];
+  
   const bodytypeArray = bodytype ? [`${bodytype}`] : ["Slim", "Average"];
-  const status = matrialStatus ? [`${matrialStatus}`] : "Single";
   const skintoneArray = skintone ? [`${skintone}`] : ["Fair", "Wheatish"];
   
   const hairtypeArray = hairtype
@@ -98,16 +99,17 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     // .ne(gender) // not equls
     .where("status")
     .in(status)
-    .where("skinTone")
-    .in(skintoneArray)
-    .where("hairType")
-    .in(hairtypeArray)
+    // .where("skinTone")
+    // .in(skintoneArray)
+    // .where("hairType")
+    // .in(hairtypeArray)
     .where("bodyType")
     .in(bodytypeArray) // in array 
-    //.nin(bodytypeArray) not in array 
+    // .nin(bodytypeArray) // not in array 
     .where("age")
     .gte(fromage)
     .lte(toage)
+    .exec()
     .then(users => {
       res.send({
         success: true,
