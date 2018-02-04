@@ -64,6 +64,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     smoke,
     height,
     bloodgroup,
+    pageSizeLimit,
+    skipRecords,
   } = req.body;
   console.log("gender: ", gender);
   console.log("gender: ", fromage);
@@ -77,7 +79,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("gender: ", hairtype);
   console.log("gender: ", familyaffluence);
   console.log("gender: ", drink);
-  // console.log("bloodgroup: ", bloodgroup);
+  console.log("pageSizeLimit: ", pageSizeLimit);
+  console.log("skipRecords: ", skipRecords);
   console.log("gender: ", smoke);
   console.log("gender: ", height);
 
@@ -131,16 +134,19 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     .where("bodyType")
     .in(bodytypeArray) // in array
     // .nin(bodytypeArray) // not in array
-    .where("hairType")
-    .in(hairtypeArray)
+    // .where("hairType")
+    // .in(hairtypeArray)
     .where("age")
     .gte(fromage)
     .lte(toage)
-    // limit(10).
-    // sort('-occupation').
+    .sort('-age height')
+    // .count()
+    // .limit(pageSizeLimit)
+    .skip(skipRecords)
     // select('name occupation').
     .exec()
     .then(users => {
+      // console.log('users is: ', users);
       res.send({
         success: true,
         users,
