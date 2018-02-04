@@ -67,7 +67,7 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     pageSizeLimit,
     skipRecords,
   } = req.body;
-  console.log("gender: ", gender);
+  console.log("gender: ", typeof gender);
   console.log("gender: ", fromage);
   console.log("gender: ", toage);
   console.log("gender: ", religion);
@@ -114,8 +114,10 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
         "Mir",
         "Kayani",
         "Khan",
-    ];
-  const religionArray = religion ? [`${religion}`] : ["Muslim", "Hindu", "Christian", "No Religion"];
+      ];
+  const religionArray = religion
+    ? [`${religion}`]
+    : ["Muslim", "Hindu", "Christian", "No Religion"];
 
   const hairtypeArray = hairtype
     ? [`${hairtype}`]
@@ -123,7 +125,7 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
 
   console.log("status is: ", status);
   console.log("body type: ", bodytypeArray);
-  User.find({})
+  const query = User.find({})
     .where("gender")
     .equals(gender)
     // .ne(gender) // not equls
@@ -139,19 +141,46 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     .where("age")
     .gte(fromage)
     .lte(toage)
-    .sort('-age height')
+    .sort("-age height")
+    .limit(pageSizeLimit)
+    .skip(skipRecords);
+  const countQuery = User.find({})
+    .where("gender")
+    .equals(gender)
+    // .ne(gender) // not equls
+    .where("status")
+    .in(status)
+    .where("skinTone")
+    .in(skintoneArray)
+    .where("bodyType")
+    .in(bodytypeArray) // in array
+    // .nin(bodytypeArray) // not in array
+    // .where("hairType")
+    // .in(hairtypeArray)
+    .where("age")
+    .gte(fromage)
+    .lte(toage)
+    .sort("-age height");
+
+  query
     // .count()
-    // .limit(pageSizeLimit)
-    .skip(skipRecords)
     // select('name occupation').
     .exec()
     .then(users => {
-      // console.log('users is: ', users);
-      res.send({
-        success: true,
-        users,
-        message: "getusersbysearchcriteria",
-      });
+      console.log("working users is: ", users);
+      countQuery
+        .count()
+        .exec()
+        .then(count => {
+          console.log("count is: ", count);
+          res.send({
+            success: true,
+            users,
+            message: "getusersbysearchcriteria",
+            count,
+          });
+        })
+        .catch(err => console.log("users catch error is: ", err));
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log("count catch error is: ", err));
 };
