@@ -5,7 +5,6 @@ const AddressSchema = require("./Address");
 
 // const MAX_LOGIN_ATTEMPTS = 5;
 // const LOCK_TIME = 2 * 60 * 60 * 1000;
-
 const userSchema = new Schema({
   id: Number,
   email: {
@@ -13,6 +12,7 @@ const userSchema = new Schema({
     trim: true,
     unique: true,
     lowercase: true,
+    default: "",
   },
   password: String,
   rejectedBy: [{ type: Schema.Types.ObjectId, default: "" }],

@@ -161,22 +161,19 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     .gte(fromage)
     .lte(toage)
     .sort("-age height");
-
   query
     // .count()
     // select('name occupation').
     .exec()
     .then(users => {
-      console.log("working users is: ", users);
       countQuery
         .count()
         .exec()
         .then(count => {
-          console.log("count is: ", count);
           res.send({
             success: true,
             users,
-            message: "getusersbysearchcriteria",
+            message: "get users by search criteria success",
             count,
           });
         })
