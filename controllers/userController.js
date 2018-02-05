@@ -157,14 +157,14 @@ exports.getUsers = (req, res, next) => {
         .gte(doc.fromAge)
         .lte(doc.toAge)
         .sort("-age fname lname")
-        .select(
-          "fname lname motherTongue religion age height city country province aboutMySelf image"
-        )
+        // .select(
+        //   "fname lname motherTongue gender religion age height city country province image"
+        // )
         // .where("likes")
         // .in([doc.bodyType])
         // where('name.last').equals('Ghost').
         // where('likes').in(['vaporizing', 'talking']).
-        .limit(10)
+        .limit(8)
         .exec((err, users) => {
           // If a user with id does exist, returns an error
           console.log(users);

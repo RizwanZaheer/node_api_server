@@ -6,67 +6,76 @@ var ObjectId = require("mongodb").ObjectID;
 const Person = require("../models/Person");
 const Story = require("../models/Story");
 const getAge = require("get-age");
+const { mName, fName } = require("../config/dataArray");
 
 function tokenForUser(user) {
   // sub = subject mean who's token belong to iat = issue at time
   const timestamp = new Date().getTime;
-  return jwt.encode({
-    sub: user.id,
-    iat: timestamp
-  }, keys.jwtSecretkey);
+  return jwt.encode(
+    {
+      sub: user.id,
+      iat: timestamp,
+    },
+    keys.jwtSecretkey
+  );
 }
 
 exports.signin = (req, res, next) => {
-  const {user} = req;
+  const { user } = req;
   console.log("user: ", user);
   // return; User has already had their email and password auth'd we just need to
   // give them a token getting current user with req.user
-  res.send({token: tokenForUser(user), user_detail: user});
+  res.send({ token: tokenForUser(user), user_detail: user });
 };
 
 exports.signup = (req, res, next) => {
   // fetching the data from post reqeust
-  const {email, password, gender} = req.body;
+  const { email, password, gender } = req.body;
   console.log("req.body: ", req.body);
-  if (!email || !password) 
-    return res.status(422).send({error: "You Must provide email & password!"});
-  
-  // See if a user with the given email exists
-  User.findOne({
-    email: email
-  }, (err, existingUser) => {
-    if (err) 
-      return next(err);
-    
-    // If a user with email does exist, returns an error
-    if (existingUser) {
-      return res
-        .status(422)
-        .send({error: "Email is in use"});
-    }
+  if (!email || !password)
+    return res
+      .status(422)
+      .send({ error: "You Must provide email & password!" });
 
-    // If a user with email does Not Exist, create and save user record
-    const objId = new ObjectId();
-    const user = new User({
-      _id: objId,
+  // See if a user with the given email exists
+  User.findOne(
+    {
       email: email,
-      password: password,
-      gender: gender,
-      address: {
-        $ref: "address_home",
-        $id: objId,
-        $db: "tutorialspoint"
+    },
+    (err, existingUser) => {
+      if (err) return next(err);
+
+      // If a user with email does exist, returns an error
+      if (existingUser) {
+        return res.status(422).send({ error: "Email is in use" });
       }
-    });
-    // saving User in Db
-    user.save(err => {
-      if (err) 
-        return next(err);
-      
-      // Respond to request indication the user was created
-      res.json({token: tokenForUser(user), success: true, currentUser: user});
-    });
-  });
+
+      // If a user with email does Not Exist, create and save user record
+      const objId = new ObjectId();
+      const user = new User({
+        _id: objId,
+        email: email,
+        password: password,
+        gender: gender,
+        address: {
+          $ref: "address_home",
+          $id: objId,
+          $db: "tutorialspoint",
+        },
+      });
+      // saving User in Db
+      user.save(err => {
+        if (err) return next(err);
+
+        // Respond to request indication the user was created
+        res.json({
+          token: tokenForUser(user),
+          success: true,
+          currentUser: user,
+        });
+      });
+    }
+  );
 };
 
 // Checking Incomming Email of user is valid present in db or not
@@ -74,24 +83,24 @@ exports.findUserByEmail = (req, res, next) => {
   console.log("user controller working!!!!");
   console.log("req : ", req.body);
   console.log("res : ", res.body);
-  const {email, password} = req.body;
-  User.findOne({
-    email: email
-  }, (err, existingUser) => {
-    if (err) 
-      return next(err);
-    if (!existingUser) {
-      res
-        .status(422)
-        .send({
+  const { email, password } = req.body;
+  User.findOne(
+    {
+      email: email,
+    },
+    (err, existingUser) => {
+      if (err) return next(err);
+      if (!existingUser) {
+        res.status(422).send({
           error: {
-            password: "Incorrect Password!"
-          }
+            password: "Incorrect Password!",
+          },
         });
+      }
+      // else {   return res.status(422).send({error: { email: "Incorrect Email!"}});
+      // }
     }
-    // else {   return res.status(422).send({error: { email: "Incorrect Email!"}});
-    // }
-  });
+  );
   next();
 };
 
@@ -186,7 +195,7 @@ exports.testing = (req, res, next) => {
     education,
     weight,
     phone,
-    bloodGroup
+    bloodGroup,
   } = req.body;
 
   console.log("email is: ", email);
@@ -209,17 +218,20 @@ exports.testing = (req, res, next) => {
   console.log("weight is: ", weight);
   const user = new User({
     age: getAge(dob),
-    email,
+    email: `shaadidotcom${Math.floor(Math.random() * 99999999)}@gmail.com`,
     bodyType,
     community,
     dob,
     drink,
     familyAffluence,
-    fname,
+    fname:
+      gender === "Female"
+        ? fName[Math.floor(Math.random() * fName.length)]
+        : mName[Math.floor(Math.random() * mName.length)],
     gender,
     hairType,
     height,
-    lname,
+    lname: mName[Math.floor(Math.random() * mName.length)],
     motherTongue,
     password,
     religion,
@@ -229,13 +241,20 @@ exports.testing = (req, res, next) => {
     education,
     weight,
     phone,
-    bloodGroup
+    bloodGroup,
   });
+  console.log("mName is: ", mName.length);
   user
     .save()
     .then(doc => {
       console.log("doc of test is: ", doc);
-      return res.send({success: true, req: "Request Complete!", result: doc});
+      return res.send({
+        success: true,
+        mNameCount: mName.length,
+        fNameCount: fName.length,
+        req: "Request Complete!",
+        result: doc,
+      });
     })
     .catch(err => console.log("error is: ", err));
 };

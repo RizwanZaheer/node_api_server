@@ -1,4 +1,5 @@
 const User = require("../models/Users");
+const { mName, fName } = require("../config/dataArray");
 
 exports.getAllUsers = (req, res, next) => {
   User.find({})
@@ -7,10 +8,7 @@ exports.getAllUsers = (req, res, next) => {
     .then((users, err) => {
       if (err) return next(err);
       if (users) {
-        res.send({
-          success: true,
-          users,
-        });
+        res.send({ success: true, users });
       }
     })
     .catch(err => console.log(err));
@@ -22,10 +20,7 @@ exports.getUserById = (req, res, next) => {
     .then(user => {
       // if (err) return next(err);
       if (user) {
-        res.send({
-          success: true,
-          user,
-        });
+        res.send({ success: true, user });
       }
     })
     .catch(errors => console.log(errors));
@@ -36,14 +31,9 @@ exports.getUserByName = (req, res, next) => {
   console.log("fname: ", fname);
 
   User.find({ fname })
-    // .where('gender').equals(gender).
-    // where('age').gte(fromage).lte(toage).
+    // .where('gender').equals(gender). where('age').gte(fromage).lte(toage).
     .then(users => {
-      res.send({
-        success: true,
-        users,
-        message: "getUserByName",
-      });
+      res.send({ success: true, users, message: "getUserByName" });
     })
     .catch(err => console.log(err));
 };
@@ -66,24 +56,42 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
     bloodgroup,
     pageSizeLimit,
     skipRecords,
+    pageType,
   } = req.body;
   console.log("gender: ", typeof gender);
-  console.log("gender: ", fromage);
-  console.log("gender: ", toage);
-  console.log("gender: ", religion);
-  console.log("gender: ", mothertongue);
+  console.log("fromage: ", fromage);
+  console.log("toage: ", toage);
+  console.log("religion: ", religion);
+  console.log("mothertoungue: ", mothertongue);
   console.log("matrialStatus: ", matrialStatus);
-  console.log("gender: ", community);
-  console.log("gender: ", skintone);
-  console.log("gender: ", bodytype);
-  console.log("gender: ", hairtype);
-  console.log("gender: ", familyaffluence);
-  console.log("gender: ", drink);
+  console.log("community: ", community);
+  console.log("skintone: ", skintone);
+  console.log("bodytype: ", bodytype);
+  console.log("haritype: ", hairtype);
+  console.log("familyaffluence: ", familyaffluence);
+  console.log("drink: ", drink);
   console.log("pageSizeLimit: ", pageSizeLimit);
   console.log("skipRecords: ", skipRecords);
-  console.log("gender: ", smoke);
-  console.log("gender: ", height);
+  console.log("smoke: ", smoke);
+  console.log("height: ", height);
+  console.log("pageType is: ", pageType);
 
+  const religionArray = religion
+    ? [`${religion}`]
+    : ["Muslim", "Hindu", "Christian", "No Religion"];
+  const motherTongueArray = mothertongue
+    ? [`${mothertongue}`]
+    : [
+        "Urdu",
+        "English",
+        "Punjabi",
+        "Sindhi",
+        "Pashto",
+        "Seraiki",
+        "Hindko",
+        "Kashmiri",
+        "Balochi",
+      ];
   const status = matrialStatus
     ? [`${matrialStatus}`]
     : ["Single", "Divorced", "Married"];
@@ -115,69 +123,196 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
         "Kayani",
         "Khan",
       ];
-  const religionArray = religion
-    ? [`${religion}`]
-    : ["Muslim", "Hindu", "Christian", "No Religion"];
 
   const hairtypeArray = hairtype
     ? [`${hairtype}`]
-    : ["Black Straight long", "Black Straight medium", "Black Straight short"];
-
+    : [
+        "Black Straight long",
+        "Black Straight medium",
+        "Black Straight short",
+        "Brown Straight long",
+        "Brown Straight short",
+        "Brown Straight medium",
+      ];
+  const smokeArray = smoke ? smoke : 'no';
+  const drinkArray = drink ? drink : 'no';
   console.log("status is: ", status);
   console.log("body type: ", bodytypeArray);
-  const query = User.find({})
-    .where("gender")
-    .equals(gender)
-    // .ne(gender) // not equls
-    .where("status")
-    .in(status)
-    .where("skinTone")
-    .in(skintoneArray)
-    .where("bodyType")
-    .in(bodytypeArray) // in array
-    // .nin(bodytypeArray) // not in array
-    // .where("hairType")
-    // .in(hairtypeArray)
-    .where("age")
-    .gte(fromage)
-    .lte(toage)
-    .sort("-age height")
-    .limit(pageSizeLimit)
-    .skip(skipRecords);
-  const countQuery = User.find({})
-    .where("gender")
-    .equals(gender)
-    // .ne(gender) // not equls
-    .where("status")
-    .in(status)
-    .where("skinTone")
-    .in(skintoneArray)
-    .where("bodyType")
-    .in(bodytypeArray) // in array
-    // .nin(bodytypeArray) // not in array
-    // .where("hairType")
-    // .in(hairtypeArray)
-    .where("age")
-    .gte(fromage)
-    .lte(toage)
-    .sort("-age height");
+  var query;
+  if (pageType !== "global") {
+    console.log("query if");
+    query = User.find({})
+      .where("gender")
+      .equals(gender)
+      .where("status")
+      .in(status)
+      .where("skinTone")
+      .in(skintoneArray)
+      .where("bodyType")
+      .in(bodytypeArray) // in array
+      .where("familyAffluence")
+      .in(familyAffluenceArray) // in array
+      .where("community")
+      .in(communityArray) // in array
+      .where("religion")
+      .in(religionArray)
+      .where("motherTongue")
+      .in(motherTongueArray)
+      .where("hairType")
+      .in(hairtypeArray)
+      .where("drink")
+      .equals(drinkArray)
+      .where("smoke")
+      .equals(smokeArray)
+      .where("age")
+      .gte(fromage)
+      .lte(toage)
+      .where("height")
+      .gte(height - 0.5)
+      .lte(toage + 0.5)
+      .sort("-age height")
+      .limit(pageSizeLimit)
+      .skip(skipRecords);
+  } else {
+    console.log("query else");
+    query = User.find({})
+      .where("gender")
+      .equals(gender)
+      .where("religion")
+      .in(religion)
+      .where("motherTongue")
+      .in(mothertongue)
+      .where("age")
+      .gte(fromage)
+      .lte(toage)
+      .sort("-age height")
+      .limit(5);
+  }
+  // .skip(skipRecords) .exists('pictures') // check column exists
+  // .where('pictures').ne([]) // not equeal to null find({pictures: {$exists:
+  // true}}) .nin(bodytypeArray) // not in array .ne(gender) // not equls
+  // .nin(bodytypeArray) // not in array
+  var countQuery;
+  if (pageType !== "global") {
+    console.log("countQuery if ");
+
+    countQuery = User.find({})
+      .where("gender")
+      .equals(gender)
+      .where("status")
+      .in(status)
+      .where("skinTone")
+      .in(skintoneArray)
+      .where("bodyType")
+      .in(bodytypeArray) // in array
+      .where("familyAffluence")
+      .in(familyAffluenceArray) // in array
+      .where("community")
+      .in(communityArray) // in array
+      .where("religion")
+      .in(religionArray)
+      .where("motherTongue")
+      .in(motherTongueArray)
+      .where("hairType")
+      .in(hairtypeArray)
+      .where("drink")
+      .equals(drinkArray)
+      .where("smoke")
+      .equals(smokeArray)
+      .where("age")
+      .gte(fromage)
+      .lte(toage)
+      .where("height")
+      .gte(height - 0.5)
+      .lte(toage + 0.5)
+      .sort("-age height");
+  } else {
+    console.log("countQuery else ");
+    countQuery = User.find({})
+      .where("gender")
+      .equals(gender)
+      .where("religion")
+      .in(religion)
+      .where("motherTongue")
+      .in(mothertongue)
+      .where("age")
+      .gte(fromage)
+      .lte(toage)
+      .sort("-age height")
+      .limit(10);
+  }
   query
-    // .count()
-    // select('name occupation').
+    // .count() select('name occupation').
     .exec()
     .then(users => {
       countQuery
         .count()
         .exec()
         .then(count => {
-          res.send({
-            success: true,
-            users,
-            message: "get users by search criteria success",
-            count,
-          });
+          if (count === 0) {
+            console.log("count if");
+            const sName =
+              gender === "Female"
+                ? fName[Math.floor(Math.random() * fName.length)]
+                : mName[Math.floor(Math.random() * mName.length)];
+            const eName = mName[Math.floor(Math.random() * mName.length)];
+
+            const user = new User({
+              email: `${sName}${eName}${Math.floor(
+                Math.random() * 99999999
+              )}@gmail.com`,
+              bodyType: bodytype ? bodytype : "Slim",
+              community: community ? community : "Malik",
+              drink: drink ? drink : "no",
+              fname: sName,
+              lname: eName,
+              gender,
+              age: gender === "Female" ? 23 : 25,
+              height: 5.2,
+              password:
+                "$2a$10$zRl.RXESyyZ8JjfLIJnPju12jVjLtZRCRz9N.NHHg0lP0vgmONy8.",
+              religion,
+              smoke: smoke ? smoke : "no",
+              weight: Math.floor(Math.random() * 100),
+              fromage,
+              toage,
+              motherTongue: mothertongue,
+              status: matrialStatus ? matrialStatus : "Single",
+              skinTone: skintone ? skintone : "Fair",
+              hairType: hairtype ? hairtype : "Black Straight long",
+              familyAffluence: familyaffluence
+                ? familyaffluence
+                : "Middle class",
+              city: "Islamabad",
+              country: "Pakistan",
+            });
+            user
+              .save()
+              .then(doc => {
+                console.log("doc of test is: ", doc);
+                return res.send({
+                  success: true,
+                  message: "get users by search criteria success",
+                  users: [doc],
+                  count: 1,
+                });
+              })
+              .catch(err => console.log("error is: ", err));
+          } else {
+            res.send({
+              success: true,
+              users,
+              message: "get users by search criteria success",
+              count,
+            });
+          }
         })
         .catch(err => console.log("users catch error is: ", err));
     })
     .catch(err => console.log("count catch error is: ", err));
 };
+
+// Specify AND as well as OR Conditions var cursor =
+// db.collection('inventory').find({   status: "A",   $or: [ { qty: { $lt: 30 }
+// }, { item: { $regex: "^p" } } ] }); SELECT * FROM inventory WHERE status =
+// "A" AND ( qty < 30 OR item LIKE "p%")
