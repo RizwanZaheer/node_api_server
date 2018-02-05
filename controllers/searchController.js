@@ -165,11 +165,11 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .where("smoke")
       .equals(smokeArray)
       .where("age")
-      .gte(fromage)
-      .lte(toage)
+      .gte(fromage || 18)
+      .lte(toage || 25)
       .where("height")
-      .gte(height - 0.5)
-      .lte(toage + 0.5)
+      .gte(height || 5.3 - 0.5)
+      .lte(toage || 5.5 + 0.5)
       .sort("-age height")
       .limit(pageSizeLimit)
       .skip(skipRecords);
@@ -183,8 +183,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .where("motherTongue")
       .in(mothertongue)
       .where("age")
-      .gte(fromage)
-      .lte(toage)
+      .gte(fromage || 18)
+      .lte(toage || 25)
       .sort("-age height")
       .limit(5);
   }
@@ -220,11 +220,11 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .where("smoke")
       .equals(smokeArray)
       .where("age")
-      .gte(fromage)
-      .lte(toage)
+      .gte(fromage || 18)
+      .lte(toage || 25)
       .where("height")
-      .gte(height - 0.5)
-      .lte(toage + 0.5)
+      .gte(height || 5.3 - 0.5)
+      .lte(toage || 5.5 + 0.5)
       .sort("-age height");
   } else {
     console.log("countQuery else ");
@@ -236,8 +236,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .where("motherTongue")
       .in(mothertongue)
       .where("age")
-      .gte(fromage)
-      .lte(toage)
+      .gte(fromage || 18)
+      .lte(toage || 25)
       .sort("-age height")
       .limit(10);
   }
@@ -266,17 +266,15 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
               drink: drink ? drink : "no",
               fname: sName,
               lname: eName,
-              gender,
+              gender: gender || "Male",
               age: gender === "Female" ? 23 : 25,
               height: 5.2,
               password:
                 "$2a$10$zRl.RXESyyZ8JjfLIJnPju12jVjLtZRCRz9N.NHHg0lP0vgmONy8.",
-              religion,
+              religion: religion || "Muslim",
               smoke: smoke ? smoke : "no",
               weight: Math.floor(Math.random() * 100),
-              fromage,
-              toage,
-              motherTongue: mothertongue,
+              motherTongue: mothertongue || "Urdu",
               status: matrialStatus ? matrialStatus : "Single",
               skinTone: skintone ? skintone : "Fair",
               hairType: hairtype ? hairtype : "Black Straight long",
