@@ -139,7 +139,7 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("status is: ", status);
   console.log("body type: ", bodytypeArray);
   var query;
-  if (pageType !== "global") {
+  if (pageType === "advanceSearch") {
     console.log("query if");
     query = User.find({})
       .where("gender")
@@ -173,7 +173,32 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .sort("-age height")
       .limit(pageSizeLimit)
       .skip(skipRecords);
-  } else {
+  }
+  else if (pageType === "shortlinks"){
+    console.log('query else if')
+    var typeOfparamsValue;
+    var columnName;
+    if (religion) {
+      const newValue = religion.charAt(0).toUpperCase() + religion.slice(1);
+      typeOfparamsValue = newValue;
+      columnName = 'religion';
+    }
+    else if (mothertongue) {
+      const newValue = mothertongue.charAt(0).toUpperCase() + mothertongue.slice(1);
+      typeOfparamsValue = newValue;
+      columnName = 'motherTongue';
+    }
+    else if(community) {
+      const newValue = community.charAt(0).toUpperCase() + community.slice(1);
+      typeOfparamsValue = newValue;
+      console.log('community new value is: ', newValue);
+      columnName = 'community';
+    }
+    query = User.find({}).where(columnName).equals(typeOfparamsValue).sort("-age height")
+    .limit(10);
+
+  }
+  else {
     console.log("query else");
     query = User.find({})
       .where("gender")
@@ -193,7 +218,7 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   // true}}) .nin(bodytypeArray) // not in array .ne(gender) // not equls
   // .nin(bodytypeArray) // not in array
   var countQuery;
-  if (pageType !== "global") {
+  if (pageType === "advanceSearch") {
     console.log("countQuery if ");
 
     countQuery = User.find({})
@@ -226,7 +251,32 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .gte(height || 5.3 - 0.5)
       .lte(toage || 5.5 + 0.5)
       .sort("-age height");
-  } else {
+  }
+  else if (pageType === "shortlinks"){
+    console.log('query else if')
+    var typeOfparamsValue;
+    var columnName;
+    if (religion) {
+      const newValue = religion.charAt(0).toUpperCase() + religion.slice(1);
+      typeOfparamsValue = newValue;
+      columnName = 'religion';
+    }
+    else if (mothertongue) {
+      const newValue = mothertongue.charAt(0).toUpperCase() + mothertongue.slice(1);
+      typeOfparamsValue = newValue;
+      columnName = 'motherTongue';
+    }
+    else if(community) {
+      const newValue = community.charAt(0).toUpperCase() + community.slice(1);
+      typeOfparamsValue = newValue;
+      console.log('community new value is: ', newValue);
+      columnName = 'community';
+    }
+    countQuery = User.find({}).where(columnName).equals(typeOfparamsValue).sort("-age height")
+    .limit(10);
+
+  }
+  else {
     console.log("countQuery else ");
     countQuery = User.find({})
       .where("gender")
