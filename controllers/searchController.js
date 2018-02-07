@@ -32,6 +32,7 @@ exports.getUserByName = (req, res, next) => {
 
   User.find({ fname })
     // .where('gender').equals(gender). where('age').gte(fromage).lte(toage).
+    sort('-age')
     .then(users => {
       res.send({ success: true, users, message: "getUserByName" });
     })
@@ -39,6 +40,7 @@ exports.getUserByName = (req, res, next) => {
 };
 exports.getUsersBySearchCriteria = (req, res, next) => {
   const {
+    userId,
     gender,
     fromage,
     toage,
@@ -75,10 +77,11 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("smoke: ", smoke);
   console.log("height: ", height);
   console.log("pageType is: ", pageType);
+  console.log('User ID is: ', userId);
 
   const religionArray = religion
     ? [`${religion}`]
-    : ["Muslim", "Hindu", "Christian", "No Religion"];
+    : ["Muslim", "Christian", "No Religion"];
   const motherTongueArray = mothertongue
     ? [`${mothertongue}`]
     : [
@@ -139,7 +142,7 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
   console.log("status is: ", status);
   console.log("body type: ", bodytypeArray);
   var query;
-  if (pageType === "advanceSearch") {
+  if (pageType === "advanceSearch" && userId) {
     console.log("query if");
     query = User.find({})
       .where("gender")
@@ -171,8 +174,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .gte(height || 5.3 - 0.5)
       .lte(toage || 5.5 + 0.5)
       .sort("-age height")
-      .limit(pageSizeLimit)
-      .skip(skipRecords);
+      .limit(pageSizeLimit || 15)
+      .skip(skipRecords || 15);
   }
   else if (pageType === "shortlinks"){
     console.log('query else if')
@@ -195,7 +198,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       columnName = 'community';
     }
     query = User.find({}).where(columnName).equals(typeOfparamsValue).sort("-age height")
-    .limit(10);
+    .limit(pageSizeLimit || 15)
+      .skip(skipRecords || 15);
 
   }
   else {
@@ -211,14 +215,15 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .gte(fromage || 18)
       .lte(toage || 25)
       .sort("-age height")
-      .limit(5);
+      .limit(pageSizeLimit || 15)
+      .skip(skipRecords || 15);
   }
   // .skip(skipRecords) .exists('pictures') // check column exists
   // .where('pictures').ne([]) // not equeal to null find({pictures: {$exists:
   // true}}) .nin(bodytypeArray) // not in array .ne(gender) // not equls
   // .nin(bodytypeArray) // not in array
   var countQuery;
-  if (pageType === "advanceSearch") {
+  if (pageType === "advanceSearch" && userId) {
     console.log("countQuery if ");
 
     countQuery = User.find({})
@@ -273,8 +278,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       columnName = 'community';
     }
     countQuery = User.find({}).where(columnName).equals(typeOfparamsValue).sort("-age height")
-    .limit(10);
-
+    .limit(pageSizeLimit || 15)
+      .skip(skipRecords || 15);
   }
   else {
     console.log("countQuery else ");
@@ -289,7 +294,8 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
       .gte(fromage || 18)
       .lte(toage || 25)
       .sort("-age height")
-      .limit(10);
+      .limit(pageSizeLimit || 15)
+      .skip(skipRecords || 15);
   }
   query
     // .count() select('name occupation').
@@ -364,3 +370,4 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
 // db.collection('inventory').find({   status: "A",   $or: [ { qty: { $lt: 30 }
 // }, { item: { $regex: "^p" } } ] }); SELECT * FROM inventory WHERE status =
 // "A" AND ( qty < 30 OR item LIKE "p%")
+// db.getCollection('shortlists').find({"_user": {$nin: ["5a64c911bfa7041c1eff64ca"]}})
