@@ -67,6 +67,12 @@ exports.updateAndSaveUser = (req, res, next) => {
     star,
   } = req.body;
   const newDob = new Date(dob);
+  const splitDob = dob.split('-');
+  const dobM = splitDob[1];
+  const dobD = splitDob[2];
+  console.log('dob is: ', dobM);
+  console.log('splitDob  is: ', splitDob);
+  console.log('dobD is: ', dobD);
   console.log("typeof height is: ", typeof height);
   console.log("typeof weight is: ", typeof weight);
   console.log("typeof phone is: ", typeof phone);
@@ -117,12 +123,107 @@ exports.updateAndSaveUser = (req, res, next) => {
     (err, doc) => {
       if (err) next(err);
       if (doc) {
-        return res.json({
-          success: true,
-          user: doc,
-        });
+        PartnerPreferences.findOne({ _user: userId })
+          .exec()
+          .then((user, err) => {
+            if (err) return next(err);
+            // if user exist then update the
+            // existing user with new values
+            if (user) {
+              PartnerPreferences.findOneAndUpdate(
+                { _user: userId },
+                {
+                  $set: {
+                    education,
+                    religion,
+                    community,
+                    age: getAge(dob) - 1,
+                    drink,
+                    familyAffluence,
+                    height,
+                    motherTongue,
+                    smoke,
+                    status,
+                    skinTone,
+                    // gender: doc.gender !==  doc.gender ? doc.gender : "Male",
+                    hairType,
+                    bodyType,
+                    weight,
+                    annualIncome: annualIncome || 0,
+                    userId,
+                    ethenic: ethenic.toLowerCase(),
+                    sport: sport.toLowerCase(),
+                    movieGenre,
+                    star,
+                  },
+                },
+                { new: true },
+                (err, doc) => {
+                  if (err) next(err);
+                  if (doc) {
+                    res.json({
+                      success: true,
+                      user: doc,
+                    });
+                  }
+                  next();
+                }
+              );
+            } else {
+              // if user doesn't exit's
+              // then create a new partner preferences
+              // and save with current userId
+              const partnerPreferences = new PartnerPreferences({
+                _user: userId,
+                education,
+                religion,
+                community,
+                fromAge: getAge(dob) - 10,
+                toAge: getAge(dob),
+                drink,
+                familyAffluence,
+                height,
+                motherTongue,
+                smoke,
+                status,
+                skinTone,
+                // gender: doc.gender === "Female" ? doc.gender : "Male",
+                hairType,
+                bodyType,
+                weight,
+                annualIncome: annualIncome || 0,
+                ethenic: ethenic.toLowerCase(),
+                sport: sport.toLowerCase(),
+                movieGenre,
+                star,
+              });
+              partnerPreferences
+                .save(error => {
+                  console.log(error);
+                })
+                .then((user, err) => {
+                  if (err) return next(err);
+                  if (user) {
+                    // res.json({
+                    //   success: true,
+                    //   result: user,
+                    // });
+                    return res.json({
+                      success: true,
+                      user: doc,
+                    });
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
       }
-      next();
+      // next();
     }
   );
 };
@@ -200,10 +301,10 @@ exports.getMatchUsersProfile = (req, res, next) => {
   User.findOne({ _id: userId }).exec((err, doc) => {
     if (err) return next(err);
     if (doc) {
-      console.log('weight is: ', doc.weight - 5) ;
-      console.log('religion is: ', doc.religion);
-      console.log('age is: ', doc.age);
-      const religionArray = [`${doc.religion}`] || ['Muslim'];
+      console.log("weight is: ", doc.weight - 5);
+      console.log("religion is: ", doc.religion);
+      console.log("age is: ", doc.age);
+      const religionArray = [`${doc.religion}`] || ["Muslim"];
       const newAge = parseInt(doc.age || 25);
       User.find({ gender })
         .where("age")

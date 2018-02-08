@@ -83,6 +83,11 @@ const partnerPreferencesSchema = new Schema({
     trim: true,
     default: "",
   },
+  gender: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   skinTone: {
     type: String,
     trim: true,
