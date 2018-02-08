@@ -60,16 +60,20 @@ exports.updateAndSaveUser = (req, res, next) => {
     city,
     country,
     userId,
+    sport,
+    movieGenre,
+    annualIncome,
+    ethenic,
+    star,
   } = req.body;
   const newDob = new Date(dob);
-  console.log('typeof height is: ', typeof height);
-  console.log('typeof weight is: ', typeof weight);
-  console.log('typeof phone is: ', typeof phone);
-  console.log('height is: ', height);
+  console.log("typeof height is: ", typeof height);
+  console.log("typeof weight is: ", typeof weight);
+  console.log("typeof phone is: ", typeof phone);
+  console.log("height is: ", height);
   // console.log('height parsefloat is: ', parseFloat(height));
   // console.log('typeof height parsefloat is: ', typeof parseFloat(height));
   // return;
-  
   User.findOneAndUpdate(
     {
       _id: userId,
@@ -101,7 +105,12 @@ exports.updateAndSaveUser = (req, res, next) => {
         weight,
         city,
         country,
+        annualIncome,
         userId,
+        ethenic: ethenic.toLowerCase(),
+        sport: sport.toLowerCase(),
+        movieGenre,
+        star,
       },
     },
     { new: true },
@@ -179,6 +188,58 @@ exports.getUsers = (req, res, next) => {
         .catch(error => {
           console.log(error);
         });
+    }
+  });
+};
+
+// getMatchUsersProfile
+exports.getMatchUsersProfile = (req, res, next) => {
+  const { gender, userId } = req.body;
+  console.log("userid: ", userId);
+
+  User.findOne({ _id: userId }).exec((err, doc) => {
+    if (err) return next(err);
+    if (doc) {
+      console.log('weight is: ', doc.weight - 5) ;
+      console.log('religion is: ', doc.religion);
+      console.log('age is: ', doc.age);
+      const religionArray = [`${doc.religion}`] || ['Muslim'];
+      const newAge = parseInt(doc.age || 25);
+      User.find({ gender })
+        .where("age")
+        // .gte(doc.fromAge)
+        .lte(newAge)
+        .where("weight")
+        .lte(doc.weight || 80)
+        // .where("religion")
+        // .in(religionArray)
+        .sort("-age fname lname")
+        // .select(
+        //   "fname lname motherTongue gender religion age height city country province image"
+        // )
+        // .where("likes")
+        // .in([doc.bodyType])
+        // where('name.last').equals('Ghost').
+        // where('likes').in(['vaporizing', 'talking']).
+        .limit(8)
+        .exec((err, users) => {
+          // If a user with id does exist, returns an error
+          console.log(users);
+          if (err) return next(err);
+          if (users) {
+            return res.json({
+              success: true,
+              users,
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      // return res.json({
+      //   success: true,
+      //   doc,
+      // });
     }
   });
 };

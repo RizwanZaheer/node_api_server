@@ -30,6 +30,26 @@ const partnerPreferencesSchema = new Schema({
     type: Number,
     default: 0,
   },
+  star: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  movieGenre: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  sport: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  ethenic: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   motherTongue: {
     type: String,
     trim: true,

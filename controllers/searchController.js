@@ -371,3 +371,9 @@ exports.getUsersBySearchCriteria = (req, res, next) => {
 // }, { item: { $regex: "^p" } } ] }); SELECT * FROM inventory WHERE status =
 // "A" AND ( qty < 30 OR item LIKE "p%")
 // db.getCollection('shortlists').find({"_user": {$nin: ["5a64c911bfa7041c1eff64ca"]}})
+
+// var Animal = mongoose.model('Animal', animalSchema);
+// Animal.find().byName('fido').exec(function(err, animals) {
+//   console.log(animals);
+// });
+

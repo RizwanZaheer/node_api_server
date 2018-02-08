@@ -9,7 +9,8 @@ const {
   getAllUsers,
   getUserEmail,
   // sendMail,
-  addUserInRejectedList
+  addUserInRejectedList,
+  getMatchUsersProfile
 } = require("../controllers/userController");
 const { sendEmail } = require("../controllers/email");
 
@@ -20,6 +21,7 @@ module.exports = app => {
   // find user's by userid/gender type female/male
   // throught partner preferences
   app.post("/api/getusers", getUsers);
+  app.post("/api/getmatchusersprofile", getMatchUsersProfile);
 
   // get user/partner preferences using userId
   app.post("/api/getdetails", getDetails);

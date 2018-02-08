@@ -46,6 +46,26 @@ const userSchema = new Schema({
     trim: true,
     default: "",
   },
+  star: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  movieGenre: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  sport: {
+    type: String,
+    trim: true,
+    default: "",
+  },
+  ethenic: {
+    type: String,
+    trim: true,
+    default: "",
+  },
   dob: {
     type: Date,
     default: Date.now(),

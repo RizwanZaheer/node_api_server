@@ -1,25 +1,27 @@
-const PartnerPreferences = require('../models/PartnerPreferences');
+const PartnerPreferences = require("../models/PartnerPreferences");
 
 exports.findAllPartnerPreferences = (req, res, next) => {
-  console.log('In Partner Preferences');
+  console.log("In Partner Preferences");
   // PartnerPreferences.find().
-
-}
+};
 
 exports.getPartnerPreference = (req, res, next) => {
   const { userId } = req.body;
-  PartnerPreferences.findOne({ _user: userId }).exec().then((doc, err) => {
-    if (err) return next(err);
-    if (doc) {
-      res.send({
-        success: true,
-        result: doc
-      });
-    }
-  }).catch((error) => {
-    console.log(error);
-  });
-}
+  PartnerPreferences.findOne({ _user: userId })
+    .exec()
+    .then((doc, err) => {
+      if (err) return next(err);
+      if (doc) {
+        res.send({
+          success: true,
+          result: doc,
+        });
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
 exports.saveAndUpdatePartnerPreferences = (req, res, next) => {
   const {
     fromAge,
@@ -36,7 +38,7 @@ exports.saveAndUpdatePartnerPreferences = (req, res, next) => {
     bodyType,
     drink,
     smoke,
-    userId
+    userId,
   } = req.body;
   // checking if user exist with userid
   PartnerPreferences.findOne({ _user: userId })
@@ -63,8 +65,8 @@ exports.saveAndUpdatePartnerPreferences = (req, res, next) => {
               bodyType,
               drink,
               height,
-              smoke
-            }
+              smoke,
+            },
           },
           { new: true },
           (err, doc) => {
@@ -72,7 +74,7 @@ exports.saveAndUpdatePartnerPreferences = (req, res, next) => {
             if (doc) {
               res.json({
                 success: true,
-                result: doc
+                result: doc,
               });
             }
             next();
@@ -97,7 +99,7 @@ exports.saveAndUpdatePartnerPreferences = (req, res, next) => {
           drink,
           height,
           smoke,
-          _user: userId
+          _user: userId,
         });
         partnerPreferences
           .save(error => {
@@ -108,7 +110,7 @@ exports.saveAndUpdatePartnerPreferences = (req, res, next) => {
             if (user) {
               res.json({
                 success: true,
-                result: user
+                result: user,
               });
             }
           })
