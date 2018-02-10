@@ -32,7 +32,7 @@ exports.getUserByName = (req, res, next) => {
 
   User.find({ fname })
     // .where('gender').equals(gender). where('age').gte(fromage).lte(toage).
-    sort('-age')
+    .sort('-age')
     .then(users => {
       res.send({ success: true, users, message: "getUserByName" });
     })
