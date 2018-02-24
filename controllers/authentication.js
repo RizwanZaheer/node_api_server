@@ -104,6 +104,14 @@ exports.findUserByEmail = (req, res, next) => {
   next();
 };
 
+exports.checking = (req, res, next) => {
+  console.log('working');
+  res.status(200).send({
+    message: 'checking fine working!',
+    success: true,
+  });
+}
+
 exports.testing = (req, res, next) => {
   // const { id } = req.body; console.log("req.body.author_id: ", author_id);
   // const name = "Rizwan Zaheer"; const id = "5a40f27dbc0568079bb7d3fc"; const

@@ -3,7 +3,8 @@ const passport = require("passport");
 const {
   signin,
   signup,
-  testing
+  testing,
+  checking
 } = require("../controllers/authentication");
 const passportService = require("../services/passport");
 
@@ -27,6 +28,8 @@ module.exports = app => {
   app.post("/signup", signup);
 
   app.post("/testing", testing);
+
+  app.post('/checking', checking );
 
   app.post("/api/upload/image", upload.any(), function(req, res, next) {
     console.log("req.body: ", req.body);
