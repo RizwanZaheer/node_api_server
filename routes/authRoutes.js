@@ -27,7 +27,10 @@ module.exports = app => {
   // Singup Post Route
   app.post("/signup", signup);
 
-  app.post("/testing", testing);
+  app.post("/testing", (req, res) => {
+    console.log("working");
+    res.send({ success: "success upload" });
+  });
 
   app.post('/checking', checking );
 

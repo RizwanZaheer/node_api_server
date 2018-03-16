@@ -1,0 +1,2 @@
+RewriteCond %{HTTP_HOST} ^www\.embrace-it\.com$
+RewriteRule ^/?$ "http\:\/\/embrace-it\.com\/" [R=301,L]
