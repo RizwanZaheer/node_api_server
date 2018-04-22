@@ -6,4 +6,4 @@ Node express Api server
   Installation<br />
   * $ npm install <br />
   * $ npm start (starting node server without nodemon)<br />
-  * $ npm server(starting nodemon server for the development mood)<br />
+  * $ npm server(starting nodemon server for the development mode)<br />
