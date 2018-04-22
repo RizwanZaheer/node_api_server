@@ -74,7 +74,7 @@ const findUserByIdAndUpdateImageUrl = (req, res, next) => {
   );
 };
 
-const updateAndSaveUser = (req, res, next) => {
+const updateAndSaveUser = (req, res) => new Promise((resolve, reject) => {
   const {
     fname,
     email,
@@ -111,38 +111,15 @@ const updateAndSaveUser = (req, res, next) => {
   const splitDob = dob.split("-");
   const dobM = parseInt(splitDob[1]);
   const dobD = parseInt(splitDob[2]);
-  console.log("dob is: ", dobM);
-  console.log("splitDob  is: ", splitDob);
-  console.log("dobD is: ", dobD);
-  console.log("typeof height is: ", typeof height);
-  console.log("typeof weight is: ", typeof weight);
-  console.log("typeof phone is: ", typeof phone);
-  console.log("height is: ", height);
 
   const getMonth = Star[dobM - 1];
   const starting = starDatesInit[dobM];
   const ending = starDatesInit[dobM];
-  console.log("get month is: ", getMonth);
-  console.log("get month is: ", typeof getMonth);
-  console.log("get starting date is: ", starting);
-  console.log("get starting date is: ", typeof starting);
-  console.log("get ending month is: ", ending);
-  console.log("get ending month is: ", typeof ending);
-  console.log("get getMonth is: ", getMonth);
   var newMonthName;
   if (starting > dobD || starting < dobD) {
-    console.log("in if get month");
     newMonthName = getMonth;
   }
-  console.log("newMonthName name is: ", newMonthName);
-
-  // console.log('height parsefloat is: ', parseFloat(height));
-  // console.log('typeof height parsefloat is: ', typeof parseFloat(height));
-  // return;
-  User.findOneAndUpdate(
-    {
-      _id: userId,
-    },
+  User.findOneAndUpdate({ _id: userId },
     {
       $set: {
         fname,
@@ -177,26 +154,17 @@ const updateAndSaveUser = (req, res, next) => {
         movieGenre,
         star: getMonth,
       },
-    },
-    {
-      new: true,
-    },
+    }, { new: true },
     (err, doc) => {
-      if (err) next(err);
+      if (err) return reject(err);
       if (doc) {
         const starName = getStar(dobD, dobM);
-        console.log("star final name is: ", starName);
         PartnerPreferences.findOne({ _user: userId })
-          .exec()
           .then((user, err) => {
-            if (err) return next(err);
-
+            if (err) return reject(err);
             // if user exist then update the existing user with new values
             if (user) {
-              PartnerPreferences.findOneAndUpdate(
-                {
-                  _user: userId,
-                },
+              PartnerPreferences.findOneAndUpdate({ _user: userId },
                 {
                   $set: {
                     education,
@@ -221,18 +189,12 @@ const updateAndSaveUser = (req, res, next) => {
                     movieGenre,
                     star: getMonth,
                   },
-                },
-                {
-                  new: true,
-                },
+                }, { new: true },
                 (err, doc) => {
-                  if (err) next(err);
-                  if (doc) {
-                    res.json({ success: true, user: doc });
-                  }
-                  next();
+                  if (err) return reject({ message: err });
+                  if (doc) return resolve({ success: true, user: doc });
                 }
-              );
+              ).catch(err => eject({ message: err }));
             } else {
               // if user doesn't exit's then create a new partner preferences and save with
               // current userId
@@ -260,54 +222,37 @@ const updateAndSaveUser = (req, res, next) => {
                 movieGenre,
                 star: getMonth,
               });
-              partnerPreferences
-                .save(error => {
-                  console.log(error);
-                })
+              partnerPreferences.save()
                 .then((user, err) => {
-                  if (err) return next(err);
-                  if (user) {
-                    // res.json({   success: true,   result: user, });
-                    return res.json({ success: true, user: doc });
-                  }
-                })
-                .catch(err => {
-                  console.log(err);
-                });
+                  if (err) return reject({ message: err });
+                  if (user) return resolve({ success: true, user: doc });
+                }).catch(err => eject({ message: err }));
             }
-          })
-          .catch(error => {
-            console.log(error);
-          });
+          }).catch(err => eject({ message: err }));
       }
-      // next();
     }
-  );
-};
+  ).catch(err => eject({ message: err }));
+});
 
 // find specific user by userId
-const getUserDetail = (req, res, next) => {
+const getUserDetail = (req) => new Promise((resolve, reject) => {
   const { userId } = req.body;
-  console.log("userid: ", userId);
   User.findOne({ _id: userId })
     // where('name.last').equals('Ghost'). where('age').gt(17).lt(66).
     // where('likes').in(['vaporizing', 'talking']). .limit(10) sort('-occupation').
     // select('name occupation').
     .exec((err, doc) => {
       // If a user with id does exist, returns an error
-      if (err) return next(err);
+      if (err) return reject(err);
       if (doc) {
-        return res.json({
+        reject({
           success: true,
           user: doc,
           // partnerPreferences
         });
       }
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
+    }).catch(err => reject({ message: err}));
+});
 
 // get users by  partner preferences
 const getUsers = (req, res, next) => {
@@ -578,7 +523,7 @@ const getMatchUsersProfile = (req, res, next) => {
     .catch(err => console.log("find one errror", err));
 };
 
-const getDetails = (req, res, next) => new Promise((resolve, reject) => {
+const getDetails = (req) => new Promise((resolve, reject) => {
   const { userId } = req.body;
   User.findById(
     {
@@ -590,8 +535,7 @@ const getDetails = (req, res, next) => new Promise((resolve, reject) => {
       try {
         if (doc) {
           PartnerPreferences.findOne({ _user: doc._id })
-            .then((partnerPreferences, err) => {
-              if (err) return next(err);
+            .then((partnerPreferences) => {
               if (partnerPreferences) {
                 resolve({
                   success: true,
@@ -633,47 +577,42 @@ const getUserEmail = (req) => new Promise((resolve, reject) => {
     .catch(err => reject({ message: err }));
 });
 
-const addUserInRejectedList = (req, res, next) => {
-  const { profileId, _id } = req.body;
-  console.log("userId  is: ", _id);
-  console.log("profileId  is: ", profileId);
-  User.findOne({ _id }).then(user => {
-    if (user) {
-      const isPresent = user.rejectedBy.indexOf(profileId);
-      if (isPresent === -1) {
-        user.rejectedBy.push(profileId);
-        User.findOneAndUpdate(
-          {
-            _id,
-          },
-          {
-            $set: {
-              rejectedBy: user.rejectedBy,
+const addUserInRejectedList = (req) =>
+  new Promise((resolve, reject) => {
+    const { profileId, _id } = req.body;
+    User.findOne({ _id }).then(user => {
+      if (user) {
+        const isPresent = user.rejectedBy.indexOf(profileId);
+        if (isPresent === -1) {
+          user.rejectedBy.push(profileId);
+          User.findOneAndUpdate(
+            {
+              _id,
             },
-          },
-          { new: true }
-        )
-          .then(doc => {
+            {
+              $set: {
+                rejectedBy: user.rejectedBy,
+              },
+            },
+            { new: true }
+          ).then(doc => {
             if (doc) {
-              return res.json({
+              resolve({
                 success: true,
                 message: "Member Successfuly Added in your Rejected List!",
                 rejectedByList: doc,
               });
             }
-            next();
-          })
-          .catch(err => console.log(err));
-      } else
-        return res.json({
-          success: true,
-          message: "Member is Already in your Rejected List!",
-          rejectedByList: user,
-        });
-    }
-    console.log("data is: ", user);
+          }).catch(err => reject({ message: err }));
+        } else
+          resolve({
+            success: true,
+            message: "Member is Already in your Rejected List!",
+            rejectedByList: user,
+          });
+      }
+    }).catch(err => reject({ message: err }));
   });
-};
 
 module.exports = {
   findUserByIdAndUpdateImageUrl,
