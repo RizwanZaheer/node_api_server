@@ -5,7 +5,7 @@ const { mName, fName } = require("../config/dataArray");
 
 const findUserByEmail = (req, res, next) => {
   return new Promise((resolve, reject) => {
-    reject({ message: 'ping pong!'});
+    reject({ message: 'ping pong!' });
   });
 };
 
@@ -389,24 +389,24 @@ const getMatchUsersProfile = (req, res, next) => {
 
             if (count !== 0) {
               User.find({})
-              .where("gender")
-              .equals(gender)
-              .where("age")
-              // .gte(doc.fromAge)
-              .lte(newAge)
-              .where("weight")
-              .lte(doc.weight - 5)
-              .where("height")
-              // .lte(doc.height)
-              .lte(doc.height - 0.3)
-              .where("hairType")
-              .equals(doc.hairType)
-              .where("religion")
-              .equals(doc.religion || "Muslim")
-              // .where("annualIncome")
-              // .in([`${doc.annualIncome}`])
-              .where("movieGenre")
-              .in([`${doc.movieGenre}`])
+                .where("gender")
+                .equals(gender)
+                .where("age")
+                // .gte(doc.fromAge)
+                .lte(newAge)
+                .where("weight")
+                .lte(doc.weight - 5)
+                .where("height")
+                // .lte(doc.height)
+                .lte(doc.height - 0.3)
+                .where("hairType")
+                .equals(doc.hairType)
+                .where("religion")
+                .equals(doc.religion || "Muslim")
+                // .where("annualIncome")
+                // .in([`${doc.annualIncome}`])
+                .where("movieGenre")
+                .in([`${doc.movieGenre}`])
                 .where("familyAffluence")
                 .in([`${doc.familyAffluence}`] || [""])
                 .where("community")
@@ -419,7 +419,7 @@ const getMatchUsersProfile = (req, res, next) => {
                     totalCount: count,
                     users: newUser,
                   });
-                }).catch(err =>console.log('testeing error'));
+                }).catch(err => console.log('testeing error'));
               // const sName =
               //   gender === "Female"
               //     ? fName[Math.floor(Math.random() * fName.length)]
@@ -539,7 +539,7 @@ const getMatchUsersProfile = (req, res, next) => {
                       ? doc.familyaffluence
                       : "Middle class",
                     star: doc.star || "leo",
-                    city: doc.city ||  "Islamabad",
+                    city: doc.city || "Islamabad",
                     country: doc.country || "Pakistan",
                     province: doc.province || "Capital"
                   });
@@ -578,65 +578,60 @@ const getMatchUsersProfile = (req, res, next) => {
     .catch(err => console.log("find one errror", err));
 };
 
-const getDetails = (req, res, next) => {
-  return new Promise((resolve, reject ) => {
-    const { userId } = req.body;
-    User.findById(
-      {
-        _id: userId,
-      },
-      (err, doc) => {
-        // If a user with id does exist, returns an error
-        if (err) return reject(err);
-        try {
-          if (doc) {
-            PartnerPreferences.findOne({ _user: doc._id })
-              .then((partnerPreferences, err) => {
-                if (err) return next(err);
-                if (partnerPreferences) {
-                  resolve({
-                    success: true,
-                    user: doc,
-                    partnerPreferences,
-                  });
-                } else {
-                  resolve({
-                    success: true,
-                    user: doc,
-                    partnerPreferences: {}, // due to this when partner preferences detail not present
-                    // and want to render the user profile in My profile component
-                  });
-                }
-              })
-              .catch(error => reject({error}));
-          } else {
-            resolve({
-              success: true,
-              user: doc,
-              partnerPreferences: {}, // due to this when partner preferences detail not present
-              // and want to render the user profile in My profile component
-            });
-          }
-        } catch (error) {
-          reject({error})
+const getDetails = (req, res, next) => new Promise((resolve, reject) => {
+  const { userId } = req.body;
+  User.findById(
+    {
+      _id: userId,
+    },
+    (err, doc) => {
+      // If a user with id does exist, returns an error
+      if (err) return reject(err);
+      try {
+        if (doc) {
+          PartnerPreferences.findOne({ _user: doc._id })
+            .then((partnerPreferences, err) => {
+              if (err) return next(err);
+              if (partnerPreferences) {
+                resolve({
+                  success: true,
+                  user: doc,
+                  partnerPreferences,
+                });
+              } else {
+                resolve({
+                  success: true,
+                  user: doc,
+                  partnerPreferences: {}, // due to this when partner preferences detail not present
+                  // and want to render the user profile in My profile component
+                });
+              }
+            })
+            .catch(error => reject({ error }));
+        } else {
+          resolve({
+            success: true,
+            user: doc,
+            partnerPreferences: {}, // due to this when partner preferences detail not present
+            // and want to render the user profile in My profile component
+          });
         }
+      } catch (error) {
+        reject({ error })
       }
-    );
-  });
-  
-};
+    }
+  );
+});
 
-const getUserEmail = (req, res, next) => {
-  return new Promise((resolve, reject) => {
-    const { _id } = req.body;
-    User.findById({ _id })
-      .select("email")
-      .then(email => {
-        resolve({ success: true, email });
-      })
-      .catch(err => reject({message: err}));
-  });
-};
+const getUserEmail = (req) => new Promise((resolve, reject) => {
+  const { _id } = req.body;
+  User.findById({ _id })
+    .select("email")
+    .then(email => {
+      resolve({ success: true, email });
+    })
+    .catch(err => reject({ message: err }));
+});
 
 const addUserInRejectedList = (req, res, next) => {
   const { profileId, _id } = req.body;

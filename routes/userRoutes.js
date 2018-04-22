@@ -25,18 +25,24 @@ module.exports = app => {
   app.post("/api/getmatchusersprofile", getMatchUsersProfile);
 
   // get user/partner preferences using userId
-  app.post("/api/getdetails", (req, res, next) => {
-    getDetails(req, res, next).then(data => res.json(data))
-      .catch((err) => res.json(data));
+  app.post("/api/getdetails", async (req, res, next) => {
+    try {
+      const data = await getDetails(req, res, next);
+      res.json(data);
+    } catch ({ message }) {
+      res.json(message);
+    }
   }
   );
 
-  app.post("/api/getuseremail",
-    (req, res, next) => {
-      getUserEmail.then(data => res.json(data))
-        .catch(({ message }) => res.json(message))
+  app.post("/api/getuseremail", async (req) => {
+    try {
+      const data = await getUserEmail(req);
+      res.json(data);
+    } catch ({ message }) {
+      res.json(message);
     }
-  );
+  });
 
   // update the existing user
   //and send back the save new change

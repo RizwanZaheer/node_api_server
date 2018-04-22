@@ -11,9 +11,9 @@ module.exports = app => {
       }
   }
   );
-  app.post('/api/adduserinshortlist', async (req, res, next) => {
+  app.post('/api/adduserinshortlist', async (req) => {
     try {
-      const data = addUserInShortList
+      const data = await addUserInShortList(req);
       return res.json(data);
     } catch ({ message }) {
       return res.json(message);

@@ -17,7 +17,7 @@ const getShortList = (req) => new Promise((resolve, reject) => {
     .catch(err => reject({ message: err }));
 });
 
-const addUserInShortList = (req, res, next) => new Promise((resolve, rej) => {
+const addUserInShortList = (req) => new Promise((resolve, reject) => {
   const { profileId, userId } = req.body;
   ShortList.findOne({ _user: userId })
     .then(users => {
