@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const shortListSchema = new Schema({
   _user: { type: String, default: "" },
-  shortListUsers: [{ type: Schema.Types.ObjectId, default: "" }],
+  shortListUsers: [{ type: Schema.Types.ObjectId, default: "", ref: 'user' }],
   createdDate: {
     type: Date,
     default: Date.now(),

@@ -1,35 +1,23 @@
 const User = require("../models/Users");
 const ShortList = require("../models/ShortList");
 
-exports.getShortList = (req, res, next) => {
+const getShortList = (req, res, next) => new Promise((resolve, reject) => {
   const { id } = req.body;
-  ShortList.findOne({ _user: id })
+  ShortList.findOne({ _user: id }).populate({
+    path: 'shortListUsers', select: 'fname lname image age city country provice height weight religion'
+  }).select("shortListUsers.fname")
     .then(user => {
-      // if (err) return next(err);
       if (user) {
-        const usersProfileList = [];
-        user.shortListUsers.forEach(id => {
-          console.log("id is: ", id);
-          User.findOne({ _id: id })
-            .select("fname lname age image city country provice height weight religion")
-            .then(usr => {
-              usersProfileList.push(usr);
-            })
-            .catch(err => console.log(err));
+        resolve({
+          success: true,
+          user: user.shortListUsers,
         });
-        setTimeout(() => {
-          return res.json({
-            success: true,
-            user: usersProfileList,
-          });
-          next();
-        }, 800);
       }
     })
-    .catch(errors => console.log(errors));
-};
+    .catch(errors => reject({ message: err }));
+});
 
-exports.addUserInShortList = (req, res, next) => {
+const addUserInShortList = (req, res, next) => {
   const { profileId, userId } = req.body;
   ShortList.findOne({ _user: userId })
     .then(users => {
@@ -88,3 +76,7 @@ exports.addUserInShortList = (req, res, next) => {
     })
     .catch(err => console.log("then catch occur:", err));
 };
+
+module.exports = {
+  getShortList, addUserInShortList
+}

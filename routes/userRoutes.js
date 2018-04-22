@@ -8,6 +8,7 @@ const {
   getUsers,
   getAllUsers,
   getUserEmail,
+  findUserByEmail,
   // sendMail,
   addUserInRejectedList,
   getMatchUsersProfile
@@ -24,9 +25,18 @@ module.exports = app => {
   app.post("/api/getmatchusersprofile", getMatchUsersProfile);
 
   // get user/partner preferences using userId
-  app.post("/api/getdetails", getDetails);
+  app.post("/api/getdetails", (req, res, next) => {
+    getDetails(req, res, next).then(data => res.json(data))
+      .catch((err) => res.json(data));
+  }
+  );
 
-  app.post("/api/getuseremail", getUserEmail);
+  app.post("/api/getuseremail",
+    (req, res, next) => {
+      getUserEmail.then(data => res.json(data))
+        .catch(({ message }) => res.json(message))
+    }
+  );
 
   // update the existing user
   //and send back the save new change
@@ -39,6 +49,14 @@ module.exports = app => {
     console.log(age);
     const finalage = getAge(age);
     res.send({ success: true, age: finalage });
+  });
+
+  app.post('/api/ping', (req, res, next) => {
+    findUserByEmail(req, res, next).then(({ message }) => {
+      res.json({ message });
+    }).catch(({ message }) => {
+      res.json({ message });
+    })
   });
 
   app.post("/api/user/email", sendEmail);

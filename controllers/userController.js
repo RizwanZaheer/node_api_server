@@ -3,9 +3,12 @@ const PartnerPreferences = require("../models/PartnerPreferences");
 const getAge = require("get-age");
 const { mName, fName } = require("../config/dataArray");
 
-exports.findUserByEmail = (req, res, next) => {
-  console.log("user controller working!!!!");
+const findUserByEmail = (req, res, next) => {
+  return new Promise((resolve, reject) => {
+    reject({ message: 'ping pong!'});
+  });
 };
+
 const Star = [
   "aquarius",
   "pisces",
@@ -40,7 +43,7 @@ function getStar(date, month) {
   return newMonthName;
 }
 // findUserByIdAndUpdateImageUrl
-exports.findUserByIdAndUpdateImageUrl = (req, res, next) => {
+const findUserByIdAndUpdateImageUrl = (req, res, next) => {
   const { userId, imageUrl } = req.body;
   console.log(userId, imageUrl);
   console.log("imageurl type:", typeof imageUrl);
@@ -71,7 +74,7 @@ exports.findUserByIdAndUpdateImageUrl = (req, res, next) => {
   );
 };
 
-exports.updateAndSaveUser = (req, res, next) => {
+const updateAndSaveUser = (req, res, next) => {
   const {
     fname,
     email,
@@ -283,7 +286,7 @@ exports.updateAndSaveUser = (req, res, next) => {
 };
 
 // find specific user by userId
-exports.getUserDetail = (req, res, next) => {
+const getUserDetail = (req, res, next) => {
   const { userId } = req.body;
   console.log("userid: ", userId);
   User.findOne({ _id: userId })
@@ -307,7 +310,7 @@ exports.getUserDetail = (req, res, next) => {
 };
 
 // get users by  partner preferences
-exports.getUsers = (req, res, next) => {
+const getUsers = (req, res, next) => {
   const { gender, userId } = req.body;
   // console.log("userid: ", userId);
   PartnerPreferences.findOne({ _user: userId }).exec((err, doc) => {
@@ -339,7 +342,7 @@ exports.getUsers = (req, res, next) => {
 };
 
 // getMatchUsersProfile
-exports.getMatchUsersProfile = (req, res, next) => {
+const getMatchUsersProfile = (req, res, next) => {
   const { gender, userId } = req.body;
   console.log("userid: ", userId);
 
@@ -575,64 +578,67 @@ exports.getMatchUsersProfile = (req, res, next) => {
     .catch(err => console.log("find one errror", err));
 };
 
-exports.getDetails = (req, res, next) => {
-  const { userId } = req.body;
-  User.findById(
-    {
-      _id: userId,
-    },
-    (err, doc) => {
-      // If a user with id does exist, returns an error
-      if (err) return next(err);
-      try {
-        if (doc) {
-          PartnerPreferences.findOne({ _user: doc._id })
-            .then((partnerPreferences, err) => {
-              if (err) return next(err);
-              if (partnerPreferences) {
-                return res.json({
-                  success: true,
-                  user: doc,
-                  partnerPreferences,
-                });
-              } else {
-                return res.json({
-                  success: true,
-                  user: doc,
-                  partnerPreferences: {}, // due to this when partner preferences detail not present
-                  // and want to render the user profile in My profile component
-                });
-              }
-            })
-            .catch(error => {
-              console.log("catch error: ", error);
+const getDetails = (req, res, next) => {
+  return new Promise((resolve, reject ) => {
+    const { userId } = req.body;
+    User.findById(
+      {
+        _id: userId,
+      },
+      (err, doc) => {
+        // If a user with id does exist, returns an error
+        if (err) return reject(err);
+        try {
+          if (doc) {
+            PartnerPreferences.findOne({ _user: doc._id })
+              .then((partnerPreferences, err) => {
+                if (err) return next(err);
+                if (partnerPreferences) {
+                  resolve({
+                    success: true,
+                    user: doc,
+                    partnerPreferences,
+                  });
+                } else {
+                  resolve({
+                    success: true,
+                    user: doc,
+                    partnerPreferences: {}, // due to this when partner preferences detail not present
+                    // and want to render the user profile in My profile component
+                  });
+                }
+              })
+              .catch(error => reject({error}));
+          } else {
+            resolve({
+              success: true,
+              user: doc,
+              partnerPreferences: {}, // due to this when partner preferences detail not present
+              // and want to render the user profile in My profile component
             });
-        } else {
-          return res.json({
-            success: true,
-            user: doc,
-            partnerPreferences: {}, // due to this when partner preferences detail not present
-            // and want to render the user profile in My profile component
-          });
+          }
+        } catch (error) {
+          reject({error})
         }
-      } catch (error) {
-        console.log("in catch: ", error);
       }
-    }
-  );
+    );
+  });
+  
 };
 
-exports.getUserEmail = (req, res, next) => {
-  const { _id } = req.body;
-  User.findById({ _id })
-    .select("email")
-    .then(email => {
-      return res.send({ success: true, email });
-    })
-    .catch(err => console.log(err));
+const getUserEmail = (req, res, next) => {
+  return new Promise((resolve, reject) => {
+    const { _id } = req.body;
+    User.findById({ _id })
+      .select("email")
+      .then(email => {
+        resolve({ success: true, email });
+      })
+      .catch(err => reject({message: err}));
+  });
 };
 
-exports.addUserInRejectedList = (req, res, next) => {
+const addUserInRejectedList = (req, res, next) => {
   const { profileId, _id } = req.body;
   console.log("userId  is: ", _id);
   console.log("profileId  is: ", profileId);
@@ -673,3 +679,15 @@ exports.addUserInRejectedList = (req, res, next) => {
     console.log("data is: ", user);
   });
 };
+
+module.exports = {
+  findUserByIdAndUpdateImageUrl,
+  updateAndSaveUser,
+  getUserDetail,
+  getUsers,
+  getMatchUsersProfile,
+  getDetails,
+  getUserEmail,
+  addUserInRejectedList,
+  findUserByEmail
+}
