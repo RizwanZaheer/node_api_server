@@ -1,7 +1,7 @@
 const User = require("../models/Users");
 const ShortList = require("../models/ShortList");
 
-const getShortList = (req, res, next) => new Promise((resolve, reject) => {
+const getShortList = (req) => new Promise((resolve, reject) => {
   const { id } = req.body;
   ShortList.findOne({ _user: id }).populate({
     path: 'shortListUsers', select: 'fname lname image age city country provice height weight religion'
@@ -14,20 +14,17 @@ const getShortList = (req, res, next) => new Promise((resolve, reject) => {
         });
       }
     })
-    .catch(errors => reject({ message: err }));
+    .catch(err => reject({ message: err }));
 });
 
-const addUserInShortList = (req, res, next) => {
+const addUserInShortList = (req, res, next) => new Promise((resolve, rej) => {
   const { profileId, userId } = req.body;
   ShortList.findOne({ _user: userId })
     .then(users => {
       if (users) {
         const isPresent = users.shortListUsers.indexOf(profileId);
-        console.log("isPresent: ", isPresent);
         if (isPresent === -1) {
           users.shortListUsers.push(profileId);
-          console.log("users.shortListUsers: ", users.shortListUsers);
-          console.log("isPresent: ", isPresent);
           ShortList.findOneAndUpdate(
             { _user: userId },
             {
@@ -39,17 +36,17 @@ const addUserInShortList = (req, res, next) => {
           )
             .then(doc => {
               if (doc) {
-                return res.json({
+                return resolve({
                   success: true,
                   message: "Member Successfuly Added in your Short List!",
                   shortListUsers: doc,
                 });
               }
-              next();
+              // next();
             })
-            .catch(err => console.log(err));
+            .catch(err => reject({ message: err }));
         } else
-          return res.json({
+          return resolve({
             success: true,
             message: "Member is Already in your Short List!",
             shortListUsers: users,
@@ -62,20 +59,20 @@ const addUserInShortList = (req, res, next) => {
             _user: userId,
           });
           shortlist.save(err => {
-            if (err) return next(err);
-            res.json({
+            if (err) return reject({message: err});
+            return resolve({
               success: true,
               message: "Member Successfuly Added in your Short List!",
               shortlist,
             });
           });
-        } catch (error) {
-          console.log("else catch error: ", error);
+        } catch (err) {
+          return reject({message: err});
         }
       }
     })
-    .catch(err => console.log("then catch occur:", err));
-};
+    .catch(err => reject({message: err}));
+});
 
 module.exports = {
   getShortList, addUserInShortList
